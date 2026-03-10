@@ -1147,8 +1147,9 @@ deployTodoApp(){
 
 deployAstroshop(){
 
-  printInfoSection "Deploying Astroshop"
-  
+  ASTROSHOPDIR="astroshop"
+
+  printInfoSection "Deploying Demo.Live Astroshop"
   if [[ "$ARCH" != "x86_64" ]]; then
     printWarn "This version of the Astroshop only supports AMD/x86 architectures and not ARM, exiting deployment..."
     return 1
@@ -1156,50 +1157,44 @@ deployAstroshop(){
 
   getNextFreeAppPort true
   PORT=$(getNextFreeAppPort)
+
   if [[ $? -ne 0 ]]; then
     printWarn "Application can't be deployed"
     return 1
   fi
 
-  # Verify if cert-manager is installed in subshell to not exit function, if not, then install it
-  (assertRunningPod cert-manager cert-manager >/dev/null 2>&1)
-  certmanager_installed=$?
-  if [[ $certmanager_installed -ne 0 ]]; then
-    printWarn "Certmanager is not installed, this version of Astroshop needs it, installing it..."
-    deployCertmanager
+  NAMESPACE="astroshop"
+
+  dynatraceEvalReadSaveCredentials
+
+  if [[ -z "${DT_INGEST_TOKEN}" || -z "${DT_OTEL_ENDPOINT}" ]]; then  
+    printWarn "DT_INGEST_TOKEN and/or DT_OTEL_ENDPOINT are not setted. DT_OTEL_ENDPOINT is calculated with the function 'dynatraceEvalReadSaveCredentials' and the env var DT_ENVIRONMENT"  
   else
-    printInfo "Certmanager is installed, continuing with deployment"
+    printInfo "OTEL Configuration URL $DT_OTEL_ENDPOINT and Ingest Token $DT_INGEST_TOKEN"  
   fi
 
-  helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+  kubectl apply -n $NAMESPACE -f $REPO_PATH/.devcontainer/apps/$ASTROSHOPDIR/yaml/astroshop-deployment.yaml
 
-  helm dependency build $REPO_PATH/.devcontainer/apps/astroshop/helm/dt-otel-demo-helm
+  kubectl -n $NAMESPACE create secret generic dt-credentials --from-literal="DT_API_TOKEN=$DT_INGEST_TOKEN" --from-literal="DT_ENDPOINT=$DT_OTEL_ENDPOINT"
+  
+  printInfo "Waiting for all pods of $NAMESPACE to be scheduled"
+  
+  printWarn "Not waiting for all pods of $NAMESPACE to be scheduled, this can take a while, type 'kubectl get pod -n $NAMESPACE --all' to see the status of them"
+  
+  printInfo "Change astroshop frontend service from ClusterIP to NodePort so it can be exposed"
+  
+  kubectl patch service frontend-proxy --namespace=$NAMESPACE --patch='{"spec": {"type": "NodePort"}}'
 
-  kubectl create namespace astroshop
+  printInfo "Exposing the $NAMESPACE frontend in NodePort $PORT"
 
-  DT_OTEL_ENDPOINT=$DT_TENANT/api/v2/otlp
-
-  printInfo "OTEL Configuration URL $DT_OTEL_ENDPOINT and Ingest Token $DT_INGEST_TOKEN"  
-
-  helm upgrade --install astroshop -f $REPO_PATH/.devcontainer/apps/astroshop/helm/dt-otel-demo-helm-deployments/values.yaml --set default.image.repository=docker.io/shinojosa/astroshop --set default.image.tag=1.12.0 --set collector_tenant_endpoint=$DT_OTEL_ENDPOINT --set collector_tenant_token=$DT_INGEST_TOKEN -n astroshop $REPO_PATH/.devcontainer/apps/astroshop/helm/dt-otel-demo-helm
-
-  printInfo "Change astroshop-frontendproxy service from LoadBalancer to NodePort"
-  kubectl patch service astroshop-frontendproxy --namespace=astroshop --patch='{"spec": {"type": "NodePort"}}'
-
-  printInfo "Exposing the astroshop-frontendproxy in NodePort $PORT"
-  kubectl patch service astroshop-frontendproxy --namespace=astroshop --type='json' --patch="[{\"op\": \"replace\", \"path\": \"/spec/ports/0/nodePort\", \"value\":$PORT}]"
-
-  printInfo "Stopping all cronjobs from Demo Live since they are not needed with this scenario"
-  kubectl get cronjobs -n astroshop -o json | jq -r '.items[] | .metadata.name' | xargs -I {} kubectl patch cronjob {} -n astroshop --patch '{"spec": {"suspend": true}}'
-
-  # Listing all cronjobs
-  kubectl get cronjobs -n astroshop
-
-  waitForAllPods astroshop
+  kubectl patch service frontend-proxy --namespace=$NAMESPACE --type='json' --patch="[{\"op\": \"replace\", \"path\": \"/spec/ports/0/nodePort\", \"value\":$PORT}]"
 
   waitAppCanHandleRequests $PORT
 
-  printInfo "Astroshop deployed succesfully and handling request in port $PORT"
+  PUBLIC_IP=$(curl ifconfig.me)
+
+  printInfo "Astroshop deployed succesfully and handling request in http://$PUBLIC_IP:$PORT"
+
 }
 
 deployBugZapperApp(){
@@ -1398,7 +1393,6 @@ deployApp(){
       if [[ $delete ]]; then
         printInfoSection "Undeploying astroshop..."
         kubectl delete ns astroshop --force
-        certmanagerDelete
       else
         deployAstroshop
       fi

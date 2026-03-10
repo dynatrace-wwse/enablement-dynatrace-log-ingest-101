@@ -14,7 +14,7 @@ export AG_IMAGE=$AG_IMAGE
 OA_IMAGE="public.ecr.aws/dynatrace/dynatrace-oneagent:1.325.66.20251118-131645"
 export OA_IMAGE=$OA_IMAGE
 # Operator Version - https://github.com/Dynatrace/dynatrace-operator/releases
-DT_OPERATOR_VERSION="1.7.1"
+DT_OPERATOR_VERSION="1.8.1"
 export DT_OPERATOR_VERSION=$DT_OPERATOR_VERSION
 
 ENDPOINT_CODESPACES_TRACKER=https://codespaces-tracker.whydevslovedynatrace.com/api/receive
