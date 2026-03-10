@@ -45,8 +45,10 @@ Toggle the `Log Management and Analytics` flag/setting to `Enabled`.  Expand the
 Check the box for `Restrict Log monitoring to certain resources`.  In the `Namespaces` field, type `astroshop`.  This will filter log ingestion on logs related to the `astroshop` Kubernetes namespace.
 
 Toggle the `Extensions` flag/setting to `Disabled`.  We will not be using this feature in this lab.
+Toggle the `Telemetry endpoints for data ingest` flag/setting to `Disabled`.  We will not be using this feature in this lab.
 
 ![Select Distribution](./img/deploy-dynatrace_k8s_select_distribution.png)
+
 
 **3. Configure cluster**
 
@@ -87,20 +89,47 @@ Locate the `dynakube.yaml` file that you downloaded from your tenant.  With the 
 
 ![Copy Dynakube](./img/deploy-dynatrace_copy_dynakube.gif)
 
-!!! tip "ActiveGate Container Resources"
-    Consider changing the ActiveGate's resources for better performance in this lab environment
-    ```yaml
+!!! warning "ActiveGate Container Resources"
+    Consider changing the ActiveGate's resources for better performance in this lab environment. Dynatrace default deployment of the Dynakaube brings a separation of concerns architecture for production environments where it separates the monitoring traffic from kubernetes monitoring and agent traffic from application observability.
+    ```yaml hl_lines="7 10-11 13-14 30-31 33-35"
     kind: DynaKube
-    spec:
-      activeGate:
-        resources:
-          requests:
-            cpu: 100m
-            memory: 512Mi
-          limits:
-            cpu: 500m
-            memory: 768Mi
+      metadata:
+        name: enablement-log-ingest-101
+    #...
+    activeGate:
+      capabilities:
+        - kubernetes-monitoring
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          cpu: 500m
+          memory: 768Mi
+      replicas: 1
+    #...
+    ---
+    kind: DynaKube
+      metadata:
+        name: enablement-log-ingest-101-agents
+    #...
+    oneAgent:
+      applicationMonitoring: {}
+    activeGate:
+      capabilities:
+        - routing
+        - debugging
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          cpu: 500m
+          memory: 768Mi
+      replicas: 1
+    #...
     ```
+     This is a sandbox so we are fine trimming the ressources and having only 1 replicaset per dynakube.
 
 Deploy the Dynakube using `kubectl`.
 ```sh
@@ -119,30 +148,30 @@ kubectl get pods -n dynatrace
 | dynatrace-webhook-5b697d4b9d-6v95s               | 1/1   | Running                 | 0        | 3m5s |
 | dynatrace-webhook-5b697d4b9d-nvslc               | 1/1   | Running                 | 0        | 3m5s |
 | enablement-log-ingest-101-activegate-0           | 1/1   | Running                 | 0        | 90s  |
+| enablement-log-ingest-101-agents-activegate-0    | 1/1   | Running                 | 0        | 90s  |
 | enablement-log-ingest-101-logmonitoring-dxrsh    | 1/1   | Running                 | 0        | 89s  |
 
-### Dynakube Log Module Spec
+### Dynakubes Kubernetes Monitoring and Application Observability + Log Management
+
+By default Dynatrace splits the ActiveGate responsibilities into two groups is recommended: One group handling everything related to Kubernetes platform monitoring, including KSPM, and the other managing Agent traffic routing, telemetry ingest, and extensions. This separation provides several advantages, to learn more about the advantages [please read here](https://docs.dynatrace.com/docs/ingest-from/setup-on-k8s/guides/deployment-and-configuration/resource-management/ag-resource-limits#using-a-dedicated-activegate-for-kubernetes-platform-monitoring)
 
 Enabling **Log Management and Analytics** with the option `Fully managed with Dynatrace Log Module` will add the Log Module to the Dynakube spec.
 
-```yaml title="Dynakube sample - Kubernetes platform monitoring + Application Observability + Log Management enabled"
+```yaml title="Dynakube:Kubernetes platform monitoring + Dynakube: Application Observability + Log Management enabled" hl_lines="24-33" 
 ---
-apiVersion: dynatrace.com/v1beta3
+piVersion: dynatrace.com/v1beta6
 kind: DynaKube
 metadata:
   name: enablement-log-ingest-101
   namespace: dynatrace
-  annotations:
-    feature.dynatrace.com/k8s-app-enabled: "true"
+  labels:
+    dynatrace.com/created-by: "dynatrace.kubernetes"
+# Link to api reference for further information: https://docs.dynatrace.com/docs/ingest-from/setup-on-k8s/reference/dynakube-parameters
 spec:
   apiUrl: https://<tenant>/api
-  metadataEnrichment:
-    enabled: true
-  oneAgent:
-    applicationMonitoring: {}
+  tokens: enablement-log-ingest-101
   activeGate:
     capabilities:
-      - routing
       - kubernetes-monitoring
     resources:
       requests:
@@ -151,27 +180,48 @@ spec:
       limits:
         cpu: 500m
         memory: 768Mi
+    replicas: 1
   templates:
     logMonitoring:
       imageRef:
         repository: public.ecr.aws/dynatrace/dynatrace-logmodule
-        tag: 1.309.66.20250401-150134
+        tag: 1.331.49.20260227-104933
   logMonitoring:
     ingestRuleMatchers:
       - attribute: k8s.namespace.name
         values:
           - astroshop
+---
+apiVersion: dynatrace.com/v1beta6
+kind: DynaKube
+metadata:
+  name: enablement-log-ingest-101-agents
+  namespace: dynatrace
+  labels:
+    dynatrace.com/created-by: "dynatrace.kubernetes"
+# Link to api reference for further information: https://docs.dynatrace.com/docs/ingest-from/setup-on-k8s/reference/dynakube-parameters
+spec:
+  apiUrl: https:/<tenant>/api
+  tokens: enablement-log-ingest-101
+  metadataEnrichment:
+    enabled: true
+  oneAgent:
+    applicationMonitoring: {}
+  activeGate:
+    capabilities:
+      - routing
+      - debugging
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 768Mi
+    replicas: 1
 ```
 
 The Log Module runs as a container in a standalone pod (as part of a daemonset) on each node.  The `spec.templates.imageRef` defines the container image and tag to be used.
-
-```yaml
-templates:
-    logMonitoring:
-      imageRef:
-        repository: public.ecr.aws/dynatrace/dynatrace-logmodule
-        tag: 1.309.66.20250401-150134
-```
 
 !!! warning "ImagePullBackOff Error"
     In case you encounter an **ImagePullBackOff** error, check [public.ecr.aws](https://gallery.ecr.aws/dynatrace/dynatrace-logmodule){target=_blank} to make sure the container image with that tag exists.  If not, change the value to use an existing one.
