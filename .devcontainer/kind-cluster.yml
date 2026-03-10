@@ -29,6 +29,15 @@ nodes:
     nodeRegistration:
       kubeletExtraArgs:
         node-labels: "ingress-ready=true"
+  # 
+  # Start cleaning unused images when disk usage exceeds 85%
+  # Stop cleaning once it drops below 80%
+  # Remove any unused image older than 7 days regardless of disk pressure
+  - |
+    kind: KubeletConfiguration
+    imageGCHighThresholdPercent: 85
+    imageGCLowThresholdPercent: 80
+    imageMaximumGCAge: 168h
   extraMounts:
   - hostPath: /
     containerPath: /mnt/root
