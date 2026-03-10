@@ -1189,7 +1189,7 @@ deployAstroshop(){
 
   kubectl patch service frontend-proxy --namespace=$NAMESPACE --type='json' --patch="[{\"op\": \"replace\", \"path\": \"/spec/ports/0/nodePort\", \"value\":$PORT}]"
 
-  waitAppCanHandleRequests $PORT
+  waitAppCanHandleRequests $PORT 60
 
   PUBLIC_IP=$(curl ifconfig.me)
 
