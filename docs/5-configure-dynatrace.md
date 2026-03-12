@@ -18,13 +18,13 @@ Log ingest rules are ordered configurations processed from top to bottom. For hi
 
 ### Log Ingest Rule
 
-In your Dynatrace tenant, open the (new) `Settings` app.  Select the `Collect and capture` submenu.  Click on the `Log monitoring` menu.  Click on `Log ingest rules` to open the setting in the `Settings Classic` app.
-
+In your Dynatrace tenant, open the `Settings` app.  Select the `Collect and capture` submenu.  Click on `Log ingest rules` to open the setting.
 ![Log Monitoring Settings](./img/configure-dynatrace_settings_collect_and_capture.png)
 
-Here you will find the log ingest rules set at the environment-level.  Rules configured here will be inherited by every host group, Kubernetes cluster, and host in the environment.  However, these settings can be overridden at the granular entity-level.
+Here you will find the log ingest rules set at the environment-level.  Rules configured here will be inherited by every host group, Kubernetes cluster, and host in the environment.  However, these settings can be overridden at the granular entity-level.  
 
-Click on `Hierarchy and overrides`.  Locate your Kubernetes cluster override for `enablement-log-ingest-101` and click on it.
+If you notice, on the screenshot on the top left corner, the cluster is as entity selected, it can be that you have selected other entities or are at the environment level, just then click `Log ingest rules` > `Hierarchy and override` and select the Cluster.
+
 
 ![Log Monitoring Hierarchy and Overrides](./img/configure-dynatrace_settings_log_ingest_hierarchy.png)
 
@@ -73,6 +73,8 @@ An enhancement to the log module for Kubernetes introduces a feature that enable
 - [Learn More:octicons-arrow-right-24:](https://docs.dynatrace.com/docs/analyze-explore-automate/logs/lma-log-ingestion/lma-log-ingestion-via-oa/lma-feature-flags){target=_blank}
 </div>
 
+![Logs modelu ff](./img/configure-dynatrace_settings_log_module_feature_flag.png)
+
 In your Dynatrace tenant, return to the Kubernetes settings for your cluster where you configured the log ingest rule.  In the Log Monitoring section, click on `Log module feature flags`.  Enable the setting `Collect all container logs`.  Click on `Save changes`.
 
 ![Log Module Feature Flags](./img/configure-dynatrace_settings_log_module_feature_flags.png)
@@ -81,12 +83,11 @@ With this feature enabled and the log ingest rule configured, Dynatrace will now
 
 ### Query CronJob Logs
 
-Validate that the logs are now being ingested into Dynatrace.  Open the `Logs` app.  Filter the logs on the `cronjobs` namespace and click `Run query`.
+Validate that the logs are now being ingested into Dynatrace.  Open the `Logs` app.  Filter the logs on the `cronjobs` namespace and click `Run query`. You can also search for the namespace on the left, search for the namespace facet.
 
 ```text
 k8s.namespace.name = cronjobs
 ```
-
 ![CronJob Logs](./img/configure-dynatrace_logs_query_new_cronjob_logs.png)
 
 ## Configure Sensitive Data Masking
@@ -106,7 +107,7 @@ $TIMESTAMP INFO Log message from cronjob.  email=example@dynatrace.io Ending job
 ```
 
 !!! tip "Built-In Sensitive Data Masking"
-    Dynatrace includes built-in sensitive data masking rules for email address, credit cards, URL queries, IBAN, and API-Tokens at the Environment-level.  If these settings are enabled, that may have already caused the email address in the CronJob log to be masked.
+    Dynatrace includes built-in sensitive data masking rules for email address, credit cards, URL queries, IBAN, and API-Tokens at the Environment-level.  If these settings are enabled, that may have already caused the email address in the CronJob log to be masked. This setting is set at environment level.
     ![Built In Masking](./img/configure-dynatrace_settings_log_sensitive_data_masking_builtin.png)
 
 ### Sensitive Data Masking Rule
@@ -150,7 +151,7 @@ The CronJob will execute every few minutes.  Allow some time for the job to run 
 Return to the `Logs` app and filter on the logs that contain the email address.
 
 ```text
-k8s.namespace.name = cronjobs k8s.deployment.name = log-message-cronjob-* content = "*email*"
+k8s.namespace.name = cronjobs k8s.workload.name = log-message-cronjob content = "*email*"
 ```
 
 ![Email Masked](./img/configure-dynatrace_logs_query_email_logs.png)
@@ -184,6 +185,9 @@ Rule Name:
 Timestamp CronJob
 ```
 
+<!--
+FIXME: The Search expression does not work anymore, the batch creates 23 log lines instead of 3. The pattern must be adapted.
+-->
 Search Expression:
 ```javascript
 %^%FT%T%z
@@ -217,7 +221,7 @@ The CronJob will execute every few minutes.  Allow some time for the job to run 
 Return to the `Logs` app and filter on the logs that contain the multiple timestamps.
 
 ```text
-k8s.namespace.name = cronjobs content != "*injection-startup*" k8s.workload.name="timestamp-cronjob"
+k8s.namespace.name = cronjobs  k8s.workload.name = "timestamp-cronjob" k8s.container.name = busybox 
 ```
 
 ![Single Log Record](./img/configure-dynatrace_logs_query_timestamp_logs.png)

@@ -90,7 +90,7 @@ Locate the `dynakube.yaml` file that you downloaded from your tenant.  With the 
 ![Copy Dynakube](./img/deploy-dynatrace_copy_dynakube.gif)
 
 !!! warning "ActiveGate Container Resources"
-    Consider changing the ActiveGate's resources for better performance in this lab environment. Dynatrace default deployment of the Dynakaube brings a separation of concerns architecture for production environments where it separates the monitoring traffic from kubernetes monitoring and agent traffic from application observability.
+    Please change the ActiveGate's resources for better performance in this lab environment. Dynatrace default deployment of the Dynakaube brings a separation of concerns architecture for production environments where it separates the monitoring traffic from kubernetes monitoring and agent traffic from application observability.
     ```yaml hl_lines="7 10-11 13-14 30-31 33-35"
     kind: DynaKube
       metadata:
@@ -224,7 +224,7 @@ spec:
 The Log Module runs as a container in a standalone pod (as part of a daemonset) on each node.  The `spec.templates.imageRef` defines the container image and tag to be used.
 
 !!! warning "ImagePullBackOff Error"
-    In case you encounter an **ImagePullBackOff** error, check [public.ecr.aws](https://gallery.ecr.aws/dynatrace/dynatrace-logmodule){target=_blank} to make sure the container image with that tag exists.  If not, change the value to use an existing one.
+    In case you encounter an **ImagePullBackOff** error (using sprint or dev tenants), check [public.ecr.aws](https://gallery.ecr.aws/dynatrace/dynatrace-logmodule){target=_blank} to make sure the container image with that tag exists.  If not, change the value to use an existing one.
     ![Container Registry](./img/deploy-dynatrace_log_module_container_registry.png)
 
 Enabling the option **Restrict Log monitoring to certain resources** option will add `spec.logMonitoring.ingestRuleMatchers` to the Dynakube definition.
@@ -247,6 +247,7 @@ As of Dynatrace Operator version `1.4.2` and Dynatrace version `1.311`, the Log 
 <div class="grid cards" markdown>
 - [Learn More:octicons-arrow-right-24:](https://docs.dynatrace.com/docs/analyze-explore-automate/logs/lma-log-ingestion/lma-log-ingestion-via-oa/lma-logs-from-kubernetes){target=_blank}
 </div>
+
 
 ### Configure Log Ingest
 
