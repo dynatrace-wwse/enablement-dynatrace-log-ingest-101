@@ -233,14 +233,21 @@ Each log message is now treated as a single, multi-line, log record containing t
 In some cases, you may want to collect container logs from the Dynatrace components running in the `dynatrace` namespace.  By default, collection of these logs is disabled, even if you have a log ingest rule configured to do so.  Logs collected from the Dynatrace components are treated like any other log that you ingest - it consumes licensing, storage, etc.
 
 In your Dynatrace tenant, return to the Kubernetes settings for your cluster where you configured the log ingest rule.  In the Log Monitoring section, click on `Advanced log settings`.  Enable the setting `Allow OneAgent to monitor Dynatrace logs`.  Click on `Save changes`.
-
 ![Allow Dynatrace Logs](./img/configure-dynatrace_settings_log_allow_dynatrace.png)
+
+![alt text](./img/configure-dynatrace_settings_log_allow_dynatrace-2.png)
+
 
 This allows the Log Module to discover the Dynatrace component logs.  However, we need to add an ingest rule to ship them to Dynatrace.
 
+
 In the Log Monitoring section, click on `Log ingest rules`.  Modify your existing rule called `enablement-log-ingest-101` and add the `dynatrace` namespace to the matcher.  Save your changes.
 
+
 ![Ingest Dynatrace Namespace Logs](./img/configure-dynatrace_settings_log_ingest_rule_add_dynatrace.png)
+
+
+
 
 ### Query Logs
 
@@ -272,55 +279,63 @@ The logs written by the `paymentservice` within the `astroshop` application are 
 ???+ abstract "Sample log snippet {...}"
     ```json
     {
-    "level":30,
-    "time":1744936198898,
-    "pid":1,
-    "hostname":"astroshop-paymentservice-7dbc46ff58-4msdx",
-    "dt.entity.host":"HOST-815866271C8841E1",
-    "dt.entity.kubernetes_cluster":"KUBERNETES_CLUSTER-FD9401B313C80ED9",
-    "dt.entity.process_group":"PROCESS_GROUP-F8DE358ACD7BA713",
-    "dt.entity.process_group_instance":"PROCESS_GROUP_INSTANCE-BE5376E9380A3175",
-    "dt.kubernetes.cluster.id":"dfc521db-c6be-471f-9e20-24f62e45bb69",
-    "dt.kubernetes.workload.kind":"deployment",
-    "dt.kubernetes.workload.name":"astroshop-paymentservice",
-    "k8s.cluster.name":"enablement-log-ingest-101",
-    "k8s.cluster.uid":"dfc521db-c6be-471f-9e20-24f62e45bb69",
-    "k8s.container.name":"paymentservice",
-    "k8s.namespace.name":"astroshop",
-    "k8s.node.name":"kind-control-plane",
-    "k8s.pod.name":"astroshop-paymentservice-7dbc46ff58-4msdx",
-    "k8s.pod.uid":"8992e584-dc50-48f9-b243-1facae6d1ba5",
-    "k8s.workload.kind":"deployment",
-    "k8s.workload.name":"astroshop-paymentservice",
-    "process.technology":"nodejs",
-    "dt.trace_id":"6977c25e6f6a6b4fcc0117087990d95b",
-    "dt.span_id":"54f824774f71e56c",
-    "dt.trace_sampled":"true",
-    "transactionId":"f762bcae-fdb7-4f55-9576-a99273683d12",
-    "cardType":"visa",
-    "lastFourDigits":"1278",
-    "amount":{
-        "units":{
-            "low":1173,
-            "high":0,
-            "unsigned":false
+    "level": "info",
+    "time": 1773317402716,
+    "pid": 1,
+    "hostname": "payment-5dfc784879-w86wj",
+    "service.name": "payment",
+    "dt.entity.host": "HOST-B63F016B875CFF80",
+    "dt.entity.kubernetes_cluster": "KUBERNETES_CLUSTER-43ACB4F898C83088",
+    "dt.entity.process_group": "PROCESS_GROUP-6E429F4AD174D87C",
+    "dt.entity.process_group_instance": "PROCESS_GROUP_INSTANCE-3BBDF12DE540BFDE",
+    "dt.kubernetes.cluster.id": "fe929203-6da5-4e2c-a9a1-76b8fdeb2740",
+    "dt.kubernetes.workload.kind": "deployment",
+    "dt.kubernetes.workload.name": "payment",
+    "k8s.cluster.name": "enablement-log-ingest-101",
+    "k8s.cluster.uid": "fe929203-6da5-4e2c-a9a1-76b8fdeb2740",
+    "k8s.container.name": "payment",
+    "k8s.namespace.name": "astroshop",
+    "k8s.node.name": "kind-control-plane",
+    "k8s.pod.name": "payment-5dfc784879-w86wj",
+    "k8s.pod.uid": "ff859978-b8f7-452e-8bfe-4bebae446269",
+    "k8s.workload.kind": "deployment",
+    "k8s.workload.name": "payment",
+    "process.technology": "nodejs",
+    "dt.trace_id": "fa0ddb066e906f294cb6a34c2f3ef5a0",
+    "dt.span_id": "0f2a3fc323720bae",
+    "dt.trace_sampled": "true",
+    "transactionId": "d849026e-e78f-402b-a671-a8c5833059cb",
+    "cardType": "american-express",
+    "lastFourDigits": "0005",
+    "amount": {
+        "units": {
+            "low": 352,
+            "high": 0,
+            "unsigned": false
         },
-        "nanos":999999999,
-        "currencyCode":"USD"
+        "nanos": 12383899,
+        "currencyCode": "EUR"
     },
-    "msg":"Transaction complete."
+    "loyalty_level": "platinum",
+    "msg": "Transaction complete."
     }
     ```
 
 ### Configure Custom Logs Pipeline
 
-In your Dynatrace tenant, open the `OpenPipeline` app.  Select `Logs` and click on the `Pipelines` tab.  Add a new Pipeline by clicking on `+ Pipeline`.
+
+In your Dynatrace tenant, go to `Settings` > `Process and contextualize` > `OpenPipeline` > `Logs`.   
+
+![alt text](./img/open-dynatrace_opp_logs_pipelines.png)
+
+Click on Pipelines tab and then add a new Pipeline by clicking on `+ Pipeline`.
 
 ![OpenPipeline Logs Pipelines](./img/configure-dynatrace_opp_logs_pipelines.png)
 
 Give the new pipeline a name, `AstroShop PaymentService`.  Click on the `Processing` tab to create processing rules.
 
 ![Name Your Pipeline](./img/configure-dynatrace_opp_name_pipeline.png)
+
 
 !!! tip "Save Your Configuration"
     It is highly recommended to save your progress often by clicking the `Save` button and then re-opening your pipeline configuration to avoid losing your changes!
@@ -329,14 +344,14 @@ Give the new pipeline a name, `AstroShop PaymentService`.  Click on the `Process
 
 Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
 
-Name:
-```text
-NodeJS
-```
-
 Type:
 ```text
 Technology Bundle: NodeJS
+```
+
+Name:
+```text
+NodeJS
 ```
 
 Matching condition:
@@ -350,14 +365,14 @@ This processor rule will apply built-in pattern detection for known NodeJS techn
 
 Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
 
-Name:
-```text
-Parse Content
-```
-
 Type:
 ```DQL
 DQL
+```
+
+Name:
+```text
+Parse Content
 ```
 
 Matching condition:
@@ -378,14 +393,14 @@ This processor rule will parse the JSON structured `content` field and flatten t
 
 Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
 
-Name:
-```text
-Message to Content
-```
-
 Type:
 ```text
 DQL
+```
+
+Name:
+```text
+Message to Content
 ```
 
 Matching condition:
@@ -405,14 +420,15 @@ This processor rule will replace the `content` field value with the `message` fi
 
 Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
 
-Name:
-```text
-Transaction Fields
-```
 
 Type:
 ```text
 DQL
+```
+
+Name:
+```text
+Transaction Fields
 ```
 
 Matching condition:
@@ -435,14 +451,14 @@ This processor rule will simplify the field names for extracting business inform
 
 Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
 
-Name:
-```text
-Mask Sensitive Data
-```
-
 Type:
 ```text
 DQL
+```
+
+Name:
+```text
+Mask Sensitive Data
 ```
 
 Matching condition:
@@ -462,14 +478,14 @@ This processor rule will create a new field containing the MD5 hash value of the
 
 Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
 
-Name:
-```text
-Cleanup Fields
-```
-
 Type:
 ```text
 DQL
+```
+
+Name:
+```text
+Cleanup Fields
 ```
 
 Matching condition:
@@ -494,14 +510,15 @@ Click on the `Data extraction` tab to create data extraction rules.
 
 Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
 
-Name:
-```text
-PaymentService Transaction
-```
 
 Type:
 ```text
 Business Event
+```
+
+Name:
+```text
+PaymentService Transaction
 ```
 
 Matching condition:
@@ -509,12 +526,12 @@ Matching condition:
 matchesValue(content,"Transaction complete.") and isNotNull(payment.amount) and isNotNull(payment.transactionid)
 ```
 
-Event type:
+Event type (Static string):
 ```SQL
 astroshop.paymentservice.transaction.complete
 ```
 
-Event provider:
+Event provider (Static string):
 ```SQL
 astroshop
 ```
@@ -528,26 +545,32 @@ This data extraction rule will generate a business event (bizevent) anytime the 
 
 ![BizEvent Processor](./img/configure-dynatrace_opp_transaction_bizevent.png)
 
-Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
 
-Name:
-```text
-PaymentService Fail Feature Flag Enabled
-```
+#### Davis Event
+
+Open the Davis tab. Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
+
+![Davis Event Processor](./img/configure-dynatrace_opp_fail_davis_event.png)
 
 Type:
 ```text
-Davis Event
+Davis event
 ```
+
+Name:
+```text
+PaymentService Failure
+```
+
 
 Matching condition:
 ```SQL
-matchesValue(status,"WARN") and matchesValue(message,"PaymentService Fail Feature Flag Enabled") and isNotNull(dt.entity.cloud_application)
+matchesValue(status, "ERROR") and content.service.name == "payment" and isNotNull(dt.entity.cloud_application)
 ```
 
 Event name:
 ```text
-PaymentService Fail Feature Flag Enabled
+PaymentService is failing
 ```
 
 Event description:
@@ -568,7 +591,6 @@ Event properties:
 
 This data extraction rule will generate a Davis event (alert) anytime the payment service fails to process a payment transaction due to the problem pattern (feature flag) being enabled.  This is an example of using OpenPipeline to alert on log data at ingest.
 
-![Davis Event Processor](./img/configure-dynatrace_opp_fail_davis_event.png)
 
 #### Metric Extraction
 
@@ -576,19 +598,19 @@ Click on the `Metric extraction` tab to create metric extraction rules.
 
 Add a new processor rule by clicking on `+ Processor`.  Configure the processor rule with the following:
 
-Name:
-```text
-PaymentService Failure
-```
-
 Type:
 ```text
 Counter metric
 ```
 
+Name:
+```text
+PaymentService Failure
+```
+
 Matching condition:
 ```SQL
-matchesValue(status,"WARN") and matchesValue(message,"PaymentService Fail Feature Flag Enabled") and isNotNull(dt.entity.cloud_application)
+matchesValue(status, "ERROR") and content.service.name == "payment" and isNotNull(dt.entity.cloud_application)
 ```
 
 Metric key:
@@ -596,14 +618,16 @@ Metric key:
 log.astroshop.paymentservice.failure
 ```
 
+Click on Dimensions and add the following:
 Dimensions:
 
 | Pre-defined fields          |
 |-----------------------------|
 | dt.entity.cloud_application |
 | dt.entity.process_group     |
-| k8s.namespace.name          |
-| k8s.workload.name           |          
+
+
+The Kubernetes fields `k8s.namespace.name`  and `k8s.workload.name`   are already added as well as cost center and cloud fields if available.        
 
 This metric extraction rule will create a counter metric to count the number of payment service failures caused by the feature flag being enabled.  Using DQL, one could count the number of log messages, summarize or make a timeseries of that data on the fly.  However, in order to optimize query costs and reduce raw log query volume, converting specific log data to metrics is a best practice for a use case such as this.
 
@@ -618,7 +642,7 @@ Click on `Save` to finish and save your new pipeline.
 
 A pipeline will not have any effect unless logs are configured to be routed to the pipeline. With dynamic routing, data is routed based on a matching condition. The matching condition is a DQL query that defines the data set you want to route.
 
-Click on `Dynamic Routing` to configure a route to the target pipeline. Click on `+ Dynamic Route` to add a new route.
+Click on `Process and contextualize` Select the  `Dynamic Routing` tab. Click on `+ Dynamic Route` on the right to add a new route.
 
 ![Dynamic Routes](./img/configure-dynatrace_opp_logs_routes.png)
 
@@ -631,7 +655,7 @@ AstroShop PaymentService
 
 Matching condition:
 ```SQL
-matchesValue(k8s.namespace.name,"astroshop") and matchesValue(k8s.container.name,"paymentservice")
+matchesValue(k8s.namespace.name,"astroshop") and matchesValue(k8s.container.name,"payment")
 ```
 
 Pipeline:
@@ -647,17 +671,25 @@ Validate that the route is enabled in the `Status` column. Click on `Save` to sa
 
 ![Save Routes](./img/configure-dynatrace_opp_save_routes.png)
 
-Allow the `paymentservice` from `astroshop` to generate new log data that will be routed through the new pipeline (3-5 minutes).
+
+
+Allow the `payment` from `astroshop` to generate new log data that will be routed through the new pipeline (3-5 minutes).
 
 ### Query Logs
 
 Return to the `Logs` app and filter on the logs generated by the payment service.
 
+<!-- 
+TODO: Ask Tony, why are the logs parsed before? Which config is zuständig for this changes?
+TODO: Replace image? 
+
+-->
 ```SQL
-k8s.namespace.name = "astroshop" k8s.container.name = "paymentservice" 
+k8s.namespace.name = "astroshop" k8s.container.name = "payment" 
 ```
 
 ![PaymentService Logs](./img/configure-dynatrace_opp_query_new_logs.png)
+
 
 ## Continue
 
