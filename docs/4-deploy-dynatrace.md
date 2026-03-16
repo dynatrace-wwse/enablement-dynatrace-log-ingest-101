@@ -159,7 +159,7 @@ Enabling **Log Management and Analytics** with the option `Fully managed with Dy
 
 ```yaml title="Dynakube:Kubernetes platform monitoring + Dynakube: Application Observability + Log Management enabled" hl_lines="24-33" 
 ---
-piVersion: dynatrace.com/v1beta6
+apiVersion: dynatrace.com/v1beta6
 kind: DynaKube
 metadata:
   name: enablement-log-ingest-101
