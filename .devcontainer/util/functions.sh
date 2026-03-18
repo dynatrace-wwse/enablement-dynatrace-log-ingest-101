@@ -1748,5 +1748,84 @@ checkHost(){
 
 }
 
+
+freeUpSpace(){
+
+  printInfoSection "Freeing up disk space"
+  printInfo "Disk usage before cleanup:"
+  df -h / | tail -1 | awk '{printInfo "  Used: "$3" / "$2" ("$5" full) — Free: "$4}'
+  df -h /
+
+  # APT cache cleanup
+  if command -v apt-get >/dev/null 2>&1; then
+    printInfo "Cleaning APT cache and removing unused packages..."
+    sudo apt-get autoremove -y 2>/dev/null
+    sudo apt-get autoclean -y 2>/dev/null
+    sudo apt-get clean 2>/dev/null
+  else
+    printWarn "apt-get not found, skipping APT cleanup"
+  fi
+
+  # Systemd journal logs
+  if command -v journalctl >/dev/null 2>&1; then
+    printInfo "Vacuuming journal logs (keeping last 7 days, max 200M)..."
+    sudo journalctl --vacuum-time=7d 2>/dev/null || true
+    sudo journalctl --vacuum-size=200M 2>/dev/null || true
+  else
+    printWarn "journalctl not found, skipping journal cleanup"
+  fi
+
+  # Python pip cache
+  if command -v pip >/dev/null 2>&1; then
+    printInfo "Purging pip cache..."
+    pip cache purge 2>/dev/null || true
+  elif command -v pip3 >/dev/null 2>&1; then
+    printInfo "Purging pip3 cache..."
+    pip3 cache purge 2>/dev/null || true
+  else
+    printWarn "pip not found, skipping Python cache cleanup"
+  fi
+
+  # Node package manager caches
+  if command -v npm >/dev/null 2>&1; then
+    printInfo "Cleaning npm cache..."
+    npm cache clean --force 2>/dev/null || true
+  fi
+  if command -v yarn >/dev/null 2>&1; then
+    printInfo "Cleaning yarn cache..."
+    yarn cache clean 2>/dev/null || true
+  fi
+  if command -v pnpm >/dev/null 2>&1; then
+    printInfo "Pruning pnpm store..."
+    pnpm store prune 2>/dev/null || true
+  fi
+
+  # Docker cleanup
+  if command -v docker >/dev/null 2>&1; then
+    if docker info >/dev/null 2>&1; then
+      printInfo "Pruning unused Docker resources (images, containers, volumes, build cache)..."
+      docker system prune -af --volumes 2>/dev/null || true
+      docker builder prune -af 2>/dev/null || true
+    else
+      printWarn "Docker is installed but not accessible, skipping Docker cleanup"
+    fi
+  else
+    printWarn "Docker not found, skipping Docker cleanup"
+  fi
+
+  # Temp files older than 7 days
+  printInfo "Removing temp files older than 7 days..."
+  sudo find /tmp -mindepth 1 -mtime +7 -delete 2>/dev/null || true
+
+  # User cache directories older than 30 days
+  printInfo "Cleaning stale user cache directories (older than 30 days)..."
+  find ~/.cache -mindepth 1 -maxdepth 1 -type d -mtime +30 -exec rm -rf {} + 2>/dev/null || true
+
+  printInfo "Disk usage after cleanup:"
+  df -h /
+
+  printInfo "✅ Disk space cleanup complete"
+}
+
 # Custom functions for each repo can be added in my_functions.sh
 source $REPO_PATH/.devcontainer/util/my_functions.sh
