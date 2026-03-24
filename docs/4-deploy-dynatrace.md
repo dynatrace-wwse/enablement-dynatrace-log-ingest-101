@@ -259,7 +259,7 @@ From the Cluster overview pop-out, in the top right corner, click on the `...` e
 
 ![Log Ingest Rules Drilldown](./img/deploy-dynatrace_k8s_cluster_drill_log_ingest_rules.png)
 
-This will open the `Kubernetes Classic` app and the connection settings for the Kubernetes Cluster.  In the Log Monitoring settings, the Log Ingest rules are shown.  You'll find the rule that was created by the Dynakube that matches the configuration in the `dynakube.yaml` spec.  It should be configured to only ingest logs from the `astroshop` namespace.
+This will open the `Kubernetes` app and the connection settings for the Kubernetes Cluster.  In the Log Monitoring settings, the Log Ingest rules are shown.  You'll find the rule that was created by the Dynakube that matches the configuration in the `dynakube.yaml` spec.  It should be configured to only ingest logs from the `astroshop` namespace.
 
 ![Log Ingest Rule](./img/deploy-dynatrace_k8s_cluster_log_ingest_rule_setting.png)
 
