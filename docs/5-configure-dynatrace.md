@@ -172,45 +172,103 @@ In our CronJob logs, the `timestamp-cronjob` writes a multi-line log record that
 
 ![Three Log Records](./img/configure-dynatrace_logs_query_3_timestamp_logs.png)
 
+We will add a configuration that ensures multi‑line application logs are ingested as a single log entry instead of one entry per line.
+
+Dynatrace uses timestamps to detect log entry boundaries:
+
+- A line with a timestamp starts a new log entry
+- All following lines without a timestamp are merged into that entr
+
+
 ### Timestamp Configuration Rule
 
 In your Dynatrace tenant, return to the Kubernetes settings for your cluster where you configured the log ingest rule.  In the Log Monitoring section, click on `Timestamp/Splitting patterns `.  Click on `Add rule`.
 
 ![Timestamp Pattern Rules](./img/configure-dynatrace_settings_log_timestamp_patterns.png)
 
+
 Configure the rule with the following details:
 
-Rule Name:
+
+![Timestamp Pattern Rule](./img/configure-dynatrace_settings_log_timestamp_patterns_rule.png)
+
+
+**Rule Name**
 ```text
 Timestamp CronJob
 ```
 
-<!--
-FIXME: The Search expression does not work anymore, the batch creates 23 log lines instead of 3. The pattern must be adapted.
--->
-Search Expression:
+**Timestamp pattern**
+What it does:
+Defines how Dynatrace recognizes the timestamp at the start of a log entry.
+
+Value:
 ```javascript
-%^%FT%T%z
+%Y-%m-%dT%H:%M:%S%z
 ```
+Here is a breakdown of our pattern `%Y-%m-%dT%H:%M:%S%z`:
 
-Conditions:
+- Matches ISO‑8601 / RFC 3339 timestamps like 2026-03-24T16:36:03Z
+- %z handles the timezone (Z = UTC)
+- Once detected, this line is treated as the start of a new log record
 
+**Timestamp search limit**
+
+Limits how many characters Dynatrace scans (from the beginning of the line) to find the timestamp.
+
+Value: 40
+
+Why:
+
+- Dynatrace only searches the first part of the line for timestamps
+- Ensures the timestamp is reliably detected even when log lines are long
+
+**Skip indented lines**
+
+What it does: 
+
+Prevents timestamps in indented lines from being interpreted as new entries.
+
+Why:
+
+- Multi‑line payloads (JSON, stack traces) are often indented
+- Keeps all indented lines merged into the parent log entry
+
+
+**JSON format detector**
+
+Disable `Detect JSON format`
+
+The log is not pure JSON (it has prefixes and trailers), so do NOT enable “Detect JSON format” — that would break parsing.
+
+
+!!! info "Why does it work if we skip indented lines and leave JSON detection?"
+    *The log already merges correctly using timestamp detection alone. We enable Skip indented lines as a defensive setting to prevent accidental splits, and explicitly disable JSON detection because the log is not emitted as pure JSON.*
+
+
+
+**Entry Boundary (optional)**
+
+What it does:
+
+Defines a literal text fragment that always marks the start of a new log entry.
+
+Example:
+`INFO BatchJob`
+
+Why:
+
+- Adds deterministic splitting when logs have a known header line
+- Useful as a safety net, but not required when timestamps are consistent
+
+
+**Conditions:**
 Kubernetes namespace name is
 ```text
 cronjobs
 ```
+Make sure this rule only applies for the namespace cronjobs.
 
-![Timestamp Pattern Rule](./img/configure-dynatrace_settings_log_timestamp_patterns_rule.png)
-
-Here is a breakdown of our pattern:
-
-| Entry | Description |
-|-------|-------------|
-| %^    | Matches timestamp patterns only at the start of a log line |
-| %F    | Shortcut for %Y-%m-%d, 2025-11-30 for example              |
-| T     | The literal character 'T' as found in the ISO 8601  format |
-| %T    | Shortcut for %H-%M-%S, 12:30:01 for example                |
-| %z    | Timezone indicator as found in the ISO 8601 format         |
 
 This rule will cause Dynatrace to stop splitting log records on new lines with timestamps, since they don't appear at the beginning of the log record.
 

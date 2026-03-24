@@ -59,11 +59,11 @@ Relevant logs are shown in the logs tab. These are based on the impacted entity 
 
 ### Kubernetes Context
 
-Next, let's approach this issue in the context of our Kubernetes environment.  Open the Entity from the problem `Kubernetes` app and click on the `View Kubernetes Workload`.
+Next, let's approach this issue in the context of our Kubernetes environment. Dynatrace understands that the impacted entity is running on Kubernetes. You can access it directly from the opened problem and click on the `View Kubernetes Workload`.
 ![Kubernetes Overview](./img/analyze-logs_kubernetes_overview.png)
 
 
-This will open the Kubernetes workload within the Kubernetes App within the problem context! This allows you to navigate through the apps (not only Kubernetes) in the problem timeframe, making it easy to spot anything related to the problem.
+This will open the Kubernetes workload within the `Kubernetes App` within the problem context! This allows you to navigate through the apps (not only Kubernetes) in the problem timeframe, making it easy to spot anything related to the problem.
 
 ![K8s app](./img/analyze-logs_kubernetes_payment_problem.png)
 
@@ -89,12 +89,7 @@ From here, we can view the correlated distributed trace for the transaction that
 
 ![Open Distributed Trace](./img/analyze-logs_kubernetes_explorer_view_trace.png)
 
-
 ### Distributed Tracing and Services Apps
-
-<!--
-TODO: In here, the trace is shown only from Charge, not stitched to /api/checkout/
- -->
 
 A distributed trace is a collection of spans representing a request's journey through a distributed system.
 
@@ -104,15 +99,18 @@ The `Distributed Tracing` app will open already filtered to view the trace from 
 
 ![Analyze Distributed Trace](./img/analyze-logs_distributed_traces_view_trace.png)
 
+
 Dynatrace automatically aggregates trace data into a `service` entity.  Traces, and ultimately spans, are analyzed out-of-the-box to measure the health of your endpoints and transactions across web, messaging, database, and other technologies.  Dynatrace provides aggregated metrics by default for things like response time, throughput, failure rate, and resource usage.  This allows you to easily find problems with your endpoints, identify hotspots, and analyze relevant trace data in real-time.
 
-This span belongs to the `PaymentService`.  Open the service in the (new) `Services` app by click on `oteldemo.PaymentService`.
+This span belongs to the `PaymentService`.  Open the service in the `Services` app by click on `oteldemo.PaymentService`.
+
 
 ![Open Services App](./img/analyze-logs_distributed_traces_view_service.png)
 
 The `Services` app opens with the `PaymentService` selected.  Here you can view the failure rate, response time, and throughput metrics for this service.  From here, you can drill down into more distributed traces for this service, find any correlated log records, view infrastructure health including Kubernetes entity details, and understand the topology and dependencies of this service.
 
 ![Services App](./img/analyze-logs_services_paymentservice.png)
+
 
 Having logs, together and in context with metrics and traces, is essential to having a unified observability strategy.  Logs, metrics, and traces together is nice to have, but correlating them together and in context with application and infrastructure topology greatly speeds up troubleshooting.  Logs in context allow you to make better real-time business decisions by understanding business outcomes correlated with underlying system health.
 
