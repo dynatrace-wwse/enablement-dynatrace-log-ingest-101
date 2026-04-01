@@ -203,5 +203,9 @@ dist-ssr
 .env
 .dt-app
 
+# Omit Cache
+.devcontainer/.cache/
+
 # Omit run file
 synchronizer/run.sh
+
