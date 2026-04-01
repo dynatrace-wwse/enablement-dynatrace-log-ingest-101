@@ -563,6 +563,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#davis-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      Davis Event
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#metric-extraction" class="md-nav__link">
     <span class="md-ellipsis">
       Metric Extraction
@@ -853,6 +862,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#davis-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      Davis Event
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#metric-extraction" class="md-nav__link">
     <span class="md-ellipsis">
       Metric Extraction
@@ -934,10 +952,10 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>Log ingest rules are ordered configurations processed from top to bottom. For higher configuration granularity, log ingest rules can be defined at four scopes: host, Kubernetes cluster, host group, and environment, with host scope rules having the highest priority.</p>
 <p><img alt="Rule Processing Priority" src="../img/configure-dynatrace_settings_rule_processing_priority.png" /></p>
 <h3 id="log-ingest-rule">Log Ingest Rule<a class="headerlink" href="#log-ingest-rule" title="Permanent link">#</a></h3>
-<p>In your Dynatrace tenant, open the (new) <code>Settings</code> app.  Select the <code>Collect and capture</code> submenu.  Click on the <code>Log monitoring</code> menu.  Click on <code>Log ingest rules</code> to open the setting in the <code>Settings Classic</code> app.</p>
-<p><img alt="Log Monitoring Settings" src="../img/configure-dynatrace_settings_collect_and_capture.png" /></p>
-<p>Here you will find the log ingest rules set at the environment-level.  Rules configured here will be inherited by every host group, Kubernetes cluster, and host in the environment.  However, these settings can be overridden at the granular entity-level.</p>
-<p>Click on <code>Hierarchy and overrides</code>.  Locate your Kubernetes cluster override for <code>enablement-log-ingest-101</code> and click on it.</p>
+<p>In your Dynatrace tenant, open the <code>Settings</code> app.  Select the <code>Collect and capture</code> submenu.  Click on <code>Log ingest rules</code> to open the setting.
+<img alt="Log Monitoring Settings" src="../img/configure-dynatrace_settings_collect_and_capture.png" /></p>
+<p>Here you will find the log ingest rules set at the environment-level.  Rules configured here will be inherited by every host group, Kubernetes cluster, and host in the environment.  However, these settings can be overridden at the granular entity-level.  </p>
+<p>If you notice, on the screenshot on the top left corner, the cluster is as entity selected, it can be that you have selected other entities or are at the environment level, just then click <code>Log ingest rules</code> &gt; <code>Hierarchy and override</code> and select the Cluster.</p>
 <p><img alt="Log Monitoring Hierarchy and Overrides" src="../img/configure-dynatrace_settings_log_ingest_hierarchy.png" /></p>
 <p>Add a new rule that will capture logs from specific pods within the <code>cronjobs</code> namespace.  Click on <code>Add rule</code>.</p>
 <p><img alt="Add Rule" src="../img/configure-dynatrace_settings_log_ingest_cluster_rules.png" /></p>
@@ -969,14 +987,15 @@ document.addEventListener('DOMContentLoaded', function() {
 <li><a href="https://docs.dynatrace.com/docs/analyze-explore-automate/logs/lma-log-ingestion/lma-log-ingestion-via-oa/lma-feature-flags" target="_blank">Learn More<span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></li>
 </ul>
 </div>
+<p><img alt="Logs modelu ff" src="../img/configure-dynatrace_settings_log_module_feature_flag.png" /></p>
 <p>In your Dynatrace tenant, return to the Kubernetes settings for your cluster where you configured the log ingest rule.  In the Log Monitoring section, click on <code>Log module feature flags</code>.  Enable the setting <code>Collect all container logs</code>.  Click on <code>Save changes</code>.</p>
 <p><img alt="Log Module Feature Flags" src="../img/configure-dynatrace_settings_log_module_feature_flags.png" /></p>
 <p>With this feature enabled and the log ingest rule configured, Dynatrace will now start to collect logs from the CronJob containers.</p>
 <h3 id="query-cronjob-logs">Query CronJob Logs<a class="headerlink" href="#query-cronjob-logs" title="Permanent link">#</a></h3>
-<p>Validate that the logs are now being ingested into Dynatrace.  Open the <code>Logs</code> app.  Filter the logs on the <code>cronjobs</code> namespace and click <code>Run query</code>.</p>
-<div class="highlight"><pre><span></span><code>k8s.namespace.name = cronjobs
+<p>Validate that the logs are now being ingested into Dynatrace.  Open the <code>Logs</code> app.  Filter the logs on the <code>cronjobs</code> namespace and click <code>Run query</code>. You can also search for the namespace on the left, search for the namespace facet.</p>
+<p><div class="highlight"><pre><span></span><code>k8s.namespace.name = cronjobs
 </code></pre></div>
-<p><img alt="CronJob Logs" src="../img/configure-dynatrace_logs_query_new_cronjob_logs.png" /></p>
+<img alt="CronJob Logs" src="../img/configure-dynatrace_logs_query_new_cronjob_logs.png" /></p>
 <h2 id="configure-sensitive-data-masking">Configure Sensitive Data Masking<a class="headerlink" href="#configure-sensitive-data-masking" title="Permanent link">#</a></h2>
 <p>Specific log messages may include user names, email addresses, URL parameters, and other information that you may not want to disclose. Log Monitoring features the ability to mask any information by modifying the configuration file on each OneAgent that handles information you consider to be sensitive.</p>
 <p>Masking is performed directly on OneAgent, ensuring that sensitive data are never ingested into the system.</p>
@@ -990,7 +1009,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Built-In Sensitive Data Masking</p>
-<p>Dynatrace includes built-in sensitive data masking rules for email address, credit cards, URL queries, IBAN, and API-Tokens at the Environment-level.  If these settings are enabled, that may have already caused the email address in the CronJob log to be masked.
+<p>Dynatrace includes built-in sensitive data masking rules for email address, credit cards, URL queries, IBAN, and API-Tokens at the Environment-level.  If these settings are enabled, that may have already caused the email address in the CronJob log to be masked. This setting is set at environment level.
 <img alt="Built In Masking" src="../img/configure-dynatrace_settings_log_sensitive_data_masking_builtin.png" /></p>
 </div>
 <h3 id="sensitive-data-masking-rule">Sensitive Data Masking Rule<a class="headerlink" href="#sensitive-data-masking-rule" title="Permanent link">#</a></h3>
@@ -1015,7 +1034,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <h3 id="query-cronjob-logs_1">Query CronJob Logs<a class="headerlink" href="#query-cronjob-logs_1" title="Permanent link">#</a></h3>
 <p>The CronJob will execute every few minutes.  Allow some time for the job to run again and produce new log records.</p>
 <p>Return to the <code>Logs</code> app and filter on the logs that contain the email address.</p>
-<div class="highlight"><pre><span></span><code>k8s.namespace.name = cronjobs k8s.deployment.name = log-message-cronjob-* content = &quot;*email*&quot;
+<div class="highlight"><pre><span></span><code>k8s.namespace.name = cronjobs k8s.workload.name = log-message-cronjob content = &quot;*email*&quot;
 </code></pre></div>
 <p><img alt="Email Masked" src="../img/configure-dynatrace_logs_query_email_logs.png" /></p>
 <p>The logs now contain the hashed value of the email address, <code>03cb5558c834be3796387a17763f315f22d3ab87cd1dc6d5d4817f8d27ec5913</code>.</p>
@@ -1029,64 +1048,83 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <p>In our CronJob logs, the <code>timestamp-cronjob</code> writes a multi-line log record that contains multiple timestamps.  Dynatrace treats the extra timestamps as new log lines.  We want this log record to be treated as a single record.</p>
 <p><img alt="Three Log Records" src="../img/configure-dynatrace_logs_query_3_timestamp_logs.png" /></p>
+<p>We will add a configuration that ensures multi‑line application logs are ingested as a single log entry instead of one entry per line.</p>
+<p>Dynatrace uses timestamps to detect log entry boundaries:</p>
+<ul>
+<li>A line with a timestamp starts a new log entry</li>
+<li>All following lines without a timestamp are merged into that entr</li>
+</ul>
 <h3 id="timestamp-configuration-rule">Timestamp Configuration Rule<a class="headerlink" href="#timestamp-configuration-rule" title="Permanent link">#</a></h3>
 <p>In your Dynatrace tenant, return to the Kubernetes settings for your cluster where you configured the log ingest rule.  In the Log Monitoring section, click on <code>Timestamp/Splitting patterns</code>.  Click on <code>Add rule</code>.</p>
 <p><img alt="Timestamp Pattern Rules" src="../img/configure-dynatrace_settings_log_timestamp_patterns.png" /></p>
 <p>Configure the rule with the following details:</p>
-<p>Rule Name:
+<p><img alt="Timestamp Pattern Rule" src="../img/configure-dynatrace_settings_log_timestamp_patterns_rule.png" /></p>
+<p><strong>Rule Name</strong>
 <div class="highlight"><pre><span></span><code>Timestamp CronJob
 </code></pre></div></p>
-<p>Search Expression:
-<div class="highlight"><pre><span></span><code><span class="o">%^%</span><span class="nx">FT</span><span class="o">%</span><span class="nx">T</span><span class="o">%</span><span class="nx">z</span>
-</code></pre></div></p>
-<p>Conditions:</p>
-<p>Kubernetes namespace name is
+<p><strong>Timestamp pattern</strong>
+What it does:
+Defines how Dynatrace recognizes the timestamp at the start of a log entry.</p>
+<p>Value:
+<div class="highlight"><pre><span></span><code><span class="o">%</span><span class="nx">Y</span><span class="o">-%</span><span class="nx">m</span><span class="o">-%</span><span class="nx">dT</span><span class="o">%</span><span class="nx">H</span><span class="o">:%</span><span class="nx">M</span><span class="o">:%</span><span class="nx">S</span><span class="o">%</span><span class="nx">z</span>
+</code></pre></div>
+Here is a breakdown of our pattern <code>%Y-%m-%dT%H:%M:%S%z</code>:</p>
+<ul>
+<li>Matches ISO‑8601 / RFC 3339 timestamps like 2026-03-24T16:36:03Z</li>
+<li>%z handles the timezone (Z = UTC)</li>
+<li>Once detected, this line is treated as the start of a new log record</li>
+</ul>
+<p><strong>Timestamp search limit</strong></p>
+<p>Limits how many characters Dynatrace scans (from the beginning of the line) to find the timestamp.</p>
+<p>Value: 40</p>
+<p>Why:</p>
+<ul>
+<li>Dynatrace only searches the first part of the line for timestamps</li>
+<li>Ensures the timestamp is reliably detected even when log lines are long</li>
+</ul>
+<p><strong>Skip indented lines</strong></p>
+<p>What it does: </p>
+<p>Prevents timestamps in indented lines from being interpreted as new entries.</p>
+<p>Why:</p>
+<ul>
+<li>Multi‑line payloads (JSON, stack traces) are often indented</li>
+<li>Keeps all indented lines merged into the parent log entry</li>
+</ul>
+<p><strong>JSON format detector</strong></p>
+<p>Disable <code>Detect JSON format</code></p>
+<p>The log is not pure JSON (it has prefixes and trailers), so do NOT enable “Detect JSON format” — that would break parsing.</p>
+<div class="admonition info">
+<p class="admonition-title">Why does it work if we skip indented lines and leave JSON detection?</p>
+<p><em>The log already merges correctly using timestamp detection alone. We enable Skip indented lines as a defensive setting to prevent accidental splits, and explicitly disable JSON detection because the log is not emitted as pure JSON.</em></p>
+</div>
+<p><strong>Entry Boundary (optional)</strong></p>
+<p>What it does:</p>
+<p>Defines a literal text fragment that always marks the start of a new log entry.</p>
+<p>Example:
+<code>INFO BatchJob</code></p>
+<p>Why:</p>
+<ul>
+<li>Adds deterministic splitting when logs have a known header line</li>
+<li>Useful as a safety net, but not required when timestamps are consistent</li>
+</ul>
+<p><strong>Conditions:</strong>
+Kubernetes namespace name is
 <div class="highlight"><pre><span></span><code>cronjobs
-</code></pre></div></p>
-<p><img alt="Timestamp Pattern Rule" src="../img/configure-dynatrace_settings_log_timestamp_patterns_rule.png" /></p>
-<p>Here is a breakdown of our pattern:</p>
-<table>
-<thead>
-<tr>
-<th>Entry</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>%^</td>
-<td>Matches timestamp patterns only at the start of a log line</td>
-</tr>
-<tr>
-<td>%F</td>
-<td>Shortcut for %Y-%m-%d, 2025-11-30 for example</td>
-</tr>
-<tr>
-<td>T</td>
-<td>The literal character 'T' as found in the ISO 8601  format</td>
-</tr>
-<tr>
-<td>%T</td>
-<td>Shortcut for %H-%M-%S, 12:30:01 for example</td>
-</tr>
-<tr>
-<td>%z</td>
-<td>Timezone indicator as found in the ISO 8601 format</td>
-</tr>
-</tbody>
-</table>
+</code></pre></div>
+Make sure this rule only applies for the namespace cronjobs.</p>
 <p>This rule will cause Dynatrace to stop splitting log records on new lines with timestamps, since they don't appear at the beginning of the log record.</p>
 <h3 id="query-logs">Query Logs<a class="headerlink" href="#query-logs" title="Permanent link">#</a></h3>
 <p>The CronJob will execute every few minutes.  Allow some time for the job to run again and produce new log records.</p>
 <p>Return to the <code>Logs</code> app and filter on the logs that contain the multiple timestamps.</p>
-<div class="highlight"><pre><span></span><code>k8s.namespace.name = cronjobs content != &quot;*injection-startup*&quot; k8s.workload.name=&quot;timestamp-cronjob&quot;
+<div class="highlight"><pre><span></span><code>k8s.namespace.name = cronjobs  k8s.workload.name = &quot;timestamp-cronjob&quot; k8s.container.name = busybox 
 </code></pre></div>
 <p><img alt="Single Log Record" src="../img/configure-dynatrace_logs_query_timestamp_logs.png" /></p>
 <p>Each log message is now treated as a single, multi-line, log record containing the entire message.</p>
 <h2 id="ingest-dynatrace-logs">Ingest Dynatrace Logs<a class="headerlink" href="#ingest-dynatrace-logs" title="Permanent link">#</a></h2>
 <p>In some cases, you may want to collect container logs from the Dynatrace components running in the <code>dynatrace</code> namespace.  By default, collection of these logs is disabled, even if you have a log ingest rule configured to do so.  Logs collected from the Dynatrace components are treated like any other log that you ingest - it consumes licensing, storage, etc.</p>
-<p>In your Dynatrace tenant, return to the Kubernetes settings for your cluster where you configured the log ingest rule.  In the Log Monitoring section, click on <code>Advanced log settings</code>.  Enable the setting <code>Allow OneAgent to monitor Dynatrace logs</code>.  Click on <code>Save changes</code>.</p>
-<p><img alt="Allow Dynatrace Logs" src="../img/configure-dynatrace_settings_log_allow_dynatrace.png" /></p>
+<p>In your Dynatrace tenant, return to the Kubernetes settings for your cluster where you configured the log ingest rule.  In the Log Monitoring section, click on <code>Advanced log settings</code>.  Enable the setting <code>Allow OneAgent to monitor Dynatrace logs</code>.  Click on <code>Save changes</code>.
+<img alt="Allow Dynatrace Logs" src="../img/configure-dynatrace_settings_log_allow_dynatrace.png" /></p>
+<p><img alt="alt text" src="../img/configure-dynatrace_settings_log_allow_dynatrace-2.png" /></p>
 <p>This allows the Log Module to discover the Dynatrace component logs.  However, we need to add an ingest rule to ship them to Dynatrace.</p>
 <p>In the Log Monitoring section, click on <code>Log ingest rules</code>.  Modify your existing rule called <code>enablement-log-ingest-101</code> and add the <code>dynatrace</code> namespace to the matcher.  Save your changes.</p>
 <p><img alt="Ingest Dynatrace Namespace Logs" src="../img/configure-dynatrace_settings_log_ingest_rule_add_dynatrace.png" /></p>
@@ -1112,48 +1150,52 @@ document.addEventListener('DOMContentLoaded', function() {
 <details class="abstract" open="open">
 <summary>Sample log snippet {...}</summary>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="mi">30</span><span class="p">,</span>
-<span class="nt">&quot;time&quot;</span><span class="p">:</span><span class="mi">1744936198898</span><span class="p">,</span>
-<span class="nt">&quot;pid&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
-<span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="s2">&quot;astroshop-paymentservice-7dbc46ff58-4msdx&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.entity.host&quot;</span><span class="p">:</span><span class="s2">&quot;HOST-815866271C8841E1&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.entity.kubernetes_cluster&quot;</span><span class="p">:</span><span class="s2">&quot;KUBERNETES_CLUSTER-FD9401B313C80ED9&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.entity.process_group&quot;</span><span class="p">:</span><span class="s2">&quot;PROCESS_GROUP-F8DE358ACD7BA713&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.entity.process_group_instance&quot;</span><span class="p">:</span><span class="s2">&quot;PROCESS_GROUP_INSTANCE-BE5376E9380A3175&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.kubernetes.cluster.id&quot;</span><span class="p">:</span><span class="s2">&quot;dfc521db-c6be-471f-9e20-24f62e45bb69&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.kubernetes.workload.kind&quot;</span><span class="p">:</span><span class="s2">&quot;deployment&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.kubernetes.workload.name&quot;</span><span class="p">:</span><span class="s2">&quot;astroshop-paymentservice&quot;</span><span class="p">,</span>
-<span class="nt">&quot;k8s.cluster.name&quot;</span><span class="p">:</span><span class="s2">&quot;enablement-log-ingest-101&quot;</span><span class="p">,</span>
-<span class="nt">&quot;k8s.cluster.uid&quot;</span><span class="p">:</span><span class="s2">&quot;dfc521db-c6be-471f-9e20-24f62e45bb69&quot;</span><span class="p">,</span>
-<span class="nt">&quot;k8s.container.name&quot;</span><span class="p">:</span><span class="s2">&quot;paymentservice&quot;</span><span class="p">,</span>
-<span class="nt">&quot;k8s.namespace.name&quot;</span><span class="p">:</span><span class="s2">&quot;astroshop&quot;</span><span class="p">,</span>
-<span class="nt">&quot;k8s.node.name&quot;</span><span class="p">:</span><span class="s2">&quot;kind-control-plane&quot;</span><span class="p">,</span>
-<span class="nt">&quot;k8s.pod.name&quot;</span><span class="p">:</span><span class="s2">&quot;astroshop-paymentservice-7dbc46ff58-4msdx&quot;</span><span class="p">,</span>
-<span class="nt">&quot;k8s.pod.uid&quot;</span><span class="p">:</span><span class="s2">&quot;8992e584-dc50-48f9-b243-1facae6d1ba5&quot;</span><span class="p">,</span>
-<span class="nt">&quot;k8s.workload.kind&quot;</span><span class="p">:</span><span class="s2">&quot;deployment&quot;</span><span class="p">,</span>
-<span class="nt">&quot;k8s.workload.name&quot;</span><span class="p">:</span><span class="s2">&quot;astroshop-paymentservice&quot;</span><span class="p">,</span>
-<span class="nt">&quot;process.technology&quot;</span><span class="p">:</span><span class="s2">&quot;nodejs&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.trace_id&quot;</span><span class="p">:</span><span class="s2">&quot;6977c25e6f6a6b4fcc0117087990d95b&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.span_id&quot;</span><span class="p">:</span><span class="s2">&quot;54f824774f71e56c&quot;</span><span class="p">,</span>
-<span class="nt">&quot;dt.trace_sampled&quot;</span><span class="p">:</span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
-<span class="nt">&quot;transactionId&quot;</span><span class="p">:</span><span class="s2">&quot;f762bcae-fdb7-4f55-9576-a99273683d12&quot;</span><span class="p">,</span>
-<span class="nt">&quot;cardType&quot;</span><span class="p">:</span><span class="s2">&quot;visa&quot;</span><span class="p">,</span>
-<span class="nt">&quot;lastFourDigits&quot;</span><span class="p">:</span><span class="s2">&quot;1278&quot;</span><span class="p">,</span>
-<span class="nt">&quot;amount&quot;</span><span class="p">:{</span>
-<span class="w">    </span><span class="nt">&quot;units&quot;</span><span class="p">:{</span>
-<span class="w">        </span><span class="nt">&quot;low&quot;</span><span class="p">:</span><span class="mi">1173</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;high&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;unsigned&quot;</span><span class="p">:</span><span class="kc">false</span>
+<span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;info&quot;</span><span class="p">,</span>
+<span class="nt">&quot;time&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1773317402716</span><span class="p">,</span>
+<span class="nt">&quot;pid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;payment-5dfc784879-w86wj&quot;</span><span class="p">,</span>
+<span class="nt">&quot;service.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;payment&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.entity.host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HOST-B63F016B875CFF80&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.entity.kubernetes_cluster&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;KUBERNETES_CLUSTER-43ACB4F898C83088&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.entity.process_group&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PROCESS_GROUP-6E429F4AD174D87C&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.entity.process_group_instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PROCESS_GROUP_INSTANCE-3BBDF12DE540BFDE&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.kubernetes.cluster.id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fe929203-6da5-4e2c-a9a1-76b8fdeb2740&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.kubernetes.workload.kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deployment&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.kubernetes.workload.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;payment&quot;</span><span class="p">,</span>
+<span class="nt">&quot;k8s.cluster.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;enablement-log-ingest-101&quot;</span><span class="p">,</span>
+<span class="nt">&quot;k8s.cluster.uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fe929203-6da5-4e2c-a9a1-76b8fdeb2740&quot;</span><span class="p">,</span>
+<span class="nt">&quot;k8s.container.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;payment&quot;</span><span class="p">,</span>
+<span class="nt">&quot;k8s.namespace.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;astroshop&quot;</span><span class="p">,</span>
+<span class="nt">&quot;k8s.node.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kind-control-plane&quot;</span><span class="p">,</span>
+<span class="nt">&quot;k8s.pod.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;payment-5dfc784879-w86wj&quot;</span><span class="p">,</span>
+<span class="nt">&quot;k8s.pod.uid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ff859978-b8f7-452e-8bfe-4bebae446269&quot;</span><span class="p">,</span>
+<span class="nt">&quot;k8s.workload.kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deployment&quot;</span><span class="p">,</span>
+<span class="nt">&quot;k8s.workload.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;payment&quot;</span><span class="p">,</span>
+<span class="nt">&quot;process.technology&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nodejs&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.trace_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fa0ddb066e906f294cb6a34c2f3ef5a0&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.span_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0f2a3fc323720bae&quot;</span><span class="p">,</span>
+<span class="nt">&quot;dt.trace_sampled&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
+<span class="nt">&quot;transactionId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;d849026e-e78f-402b-a671-a8c5833059cb&quot;</span><span class="p">,</span>
+<span class="nt">&quot;cardType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;american-express&quot;</span><span class="p">,</span>
+<span class="nt">&quot;lastFourDigits&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0005&quot;</span><span class="p">,</span>
+<span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;units&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;low&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">352</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;high&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;unsigned&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;nanos&quot;</span><span class="p">:</span><span class="mi">999999999</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;currencyCode&quot;</span><span class="p">:</span><span class="s2">&quot;USD&quot;</span>
+<span class="w">    </span><span class="nt">&quot;nanos&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12383899</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;currencyCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EUR&quot;</span>
 <span class="p">},</span>
-<span class="nt">&quot;msg&quot;</span><span class="p">:</span><span class="s2">&quot;Transaction complete.&quot;</span>
+<span class="nt">&quot;loyalty_level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;platinum&quot;</span><span class="p">,</span>
+<span class="nt">&quot;msg&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Transaction complete.&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
 </details>
 <h3 id="configure-custom-logs-pipeline">Configure Custom Logs Pipeline<a class="headerlink" href="#configure-custom-logs-pipeline" title="Permanent link">#</a></h3>
-<p>In your Dynatrace tenant, open the <code>OpenPipeline</code> app.  Select <code>Logs</code> and click on the <code>Pipelines</code> tab.  Add a new Pipeline by clicking on <code>+ Pipeline</code>.</p>
+<p>In your Dynatrace tenant, go to <code>Settings</code> &gt; <code>Process and contextualize</code> &gt; <code>OpenPipeline</code> &gt; <code>Logs</code>.   </p>
+<p><img alt="alt text" src="../img/open-dynatrace_opp_logs_pipelines.png" /></p>
+<p>Click on Pipelines tab and then add a new Pipeline by clicking on <code>+ Pipeline</code>.</p>
 <p><img alt="OpenPipeline Logs Pipelines" src="../img/configure-dynatrace_opp_logs_pipelines.png" /></p>
 <p>Give the new pipeline a name, <code>AstroShop PaymentService</code>.  Click on the <code>Processing</code> tab to create processing rules.</p>
 <p><img alt="Name Your Pipeline" src="../img/configure-dynatrace_opp_name_pipeline.png" /></p>
@@ -1163,11 +1205,11 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <h4 id="processing-rules">Processing Rules<a class="headerlink" href="#processing-rules" title="Permanent link">#</a></h4>
 <p>Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
-<p>Name:
-<div class="highlight"><pre><span></span><code>NodeJS
-</code></pre></div></p>
 <p>Type:
 <div class="highlight"><pre><span></span><code>Technology Bundle: NodeJS
+</code></pre></div></p>
+<p>Name:
+<div class="highlight"><pre><span></span><code>NodeJS
 </code></pre></div></p>
 <p>Matching condition:
 <div class="highlight"><pre><span></span><code><span class="n">Pre</span><span class="o">-</span><span class="k">defined</span><span class="p">:</span><span class="w"> </span><span class="n">matchesValue</span><span class="p">(</span><span class="n">process</span><span class="p">.</span><span class="n">technology</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Node.js&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">matchesValue</span><span class="p">(</span><span class="n">process</span><span class="p">.</span><span class="n">technology</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;nodejs&quot;</span><span class="p">)</span>
@@ -1175,11 +1217,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>This processor rule will apply built-in pattern detection for known NodeJS technology log frameworks to parse and enrich the log content.  In our example, this will be important to extract the numeric <code>loglevel</code> into a recognizable string value; such as "INFO" or "WARN".</p>
 <p><img alt="NodeJS Processor" src="../img/configure-dynatrace_opp_nodejs.png" /></p>
 <p>Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
-<p>Name:
-<div class="highlight"><pre><span></span><code>Parse Content
-</code></pre></div></p>
 <p>Type:
 <div class="highlight"><pre><span></span><code>DQL
+</code></pre></div></p>
+<p>Name:
+<div class="highlight"><pre><span></span><code>Parse Content
 </code></pre></div></p>
 <p>Matching condition:
 <div class="highlight"><pre><span></span><code><span class="n">isNotNull</span><span class="p">(</span><span class="n">log</span><span class="p">.</span><span class="n">raw_level</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">loglevel</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="ss">&quot;NONE&quot;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
@@ -1192,11 +1234,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>This processor rule will parse the JSON structured <code>content</code> field and flatten the object into new fields.  This will make accessing the details in the content field much easier.</p>
 <p><img alt="Parse Content Processor" src="../img/configure-dynatrace_opp_parse_content.png" /></p>
 <p>Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
-<p>Name:
-<div class="highlight"><pre><span></span><code>Message to Content
-</code></pre></div></p>
 <p>Type:
 <div class="highlight"><pre><span></span><code>DQL
+</code></pre></div></p>
+<p>Name:
+<div class="highlight"><pre><span></span><code>Message to Content
 </code></pre></div></p>
 <p>Matching condition:
 <div class="highlight"><pre><span></span><code><span class="n">isNotNull</span><span class="p">(</span><span class="n">log</span><span class="p">.</span><span class="n">raw_level</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">loglevel</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="ss">&quot;NONE&quot;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">json_content</span><span class="p">)</span>
@@ -1208,11 +1250,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>This processor rule will replace the <code>content</code> field value with the <code>message</code> field value.  The JSON object in the content field is excessive and contains a ton of information that isn't relative to the field itself.  The same information already exists on the log, outside of the content field.</p>
 <p><img alt="Message to Content Processor" src="../img/configure-dynatrace_opp_message_to_content.png" /></p>
 <p>Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
-<p>Name:
-<div class="highlight"><pre><span></span><code>Transaction Fields
-</code></pre></div></p>
 <p>Type:
 <div class="highlight"><pre><span></span><code>DQL
+</code></pre></div></p>
+<p>Name:
+<div class="highlight"><pre><span></span><code>Transaction Fields
 </code></pre></div></p>
 <p>Matching condition:
 <div class="highlight"><pre><span></span><code><span class="n">matchesValue</span><span class="p">(</span><span class="n">content</span><span class="p">,</span><span class="ss">&quot;Transaction complete.&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">content</span><span class="p">.</span><span class="n">amount</span><span class="p">.</span><span class="n">units</span><span class="p">.</span><span class="n">low</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">content</span><span class="p">.</span><span class="n">transactionId</span><span class="p">)</span>
@@ -1227,11 +1269,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>This processor rule will simplify the field names for extracting business information.  When the service successfully processes a payment transaction, a log record is written with the payment information.  We want this information extracted for business observability use cases.</p>
 <p><img alt="Transaction Fields Processor" src="../img/configure-dynatrace_opp_transaction_fields.png" /></p>
 <p>Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
-<p>Name:
-<div class="highlight"><pre><span></span><code>Mask Sensitive Data
-</code></pre></div></p>
 <p>Type:
 <div class="highlight"><pre><span></span><code>DQL
+</code></pre></div></p>
+<p>Name:
+<div class="highlight"><pre><span></span><code>Mask Sensitive Data
 </code></pre></div></p>
 <p>Matching condition:
 <div class="highlight"><pre><span></span><code><span class="n">isNotNull</span><span class="p">(</span><span class="n">content</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">creditCard</span><span class="p">.</span><span class="n">creditCardNumber</span><span class="p">)</span>
@@ -1243,11 +1285,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>This processor rule will create a new field containing the MD5 hash value of the credit card number.  This is an example of masking sensitive data at ingest using OpenPipeline.</p>
 <p><img alt="Mask Sensitive Data Processor" src="../img/configure-dynatrace_opp_mask_sensitive.png" /></p>
 <p>Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
-<p>Name:
-<div class="highlight"><pre><span></span><code>Cleanup Fields
-</code></pre></div></p>
 <p>Type:
 <div class="highlight"><pre><span></span><code>DQL
+</code></pre></div></p>
+<p>Name:
+<div class="highlight"><pre><span></span><code>Cleanup Fields
 </code></pre></div></p>
 <p>Matching condition:
 <div class="highlight"><pre><span></span><code><span class="n">isNotNull</span><span class="p">(</span><span class="n">log</span><span class="p">.</span><span class="n">raw_level</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">loglevel</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="ss">&quot;NONE&quot;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">json_content</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
@@ -1262,19 +1304,19 @@ document.addEventListener('DOMContentLoaded', function() {
 <h4 id="data-extraction">Data Extraction<a class="headerlink" href="#data-extraction" title="Permanent link">#</a></h4>
 <p>Click on the <code>Data extraction</code> tab to create data extraction rules.</p>
 <p>Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
-<p>Name:
-<div class="highlight"><pre><span></span><code>PaymentService Transaction
-</code></pre></div></p>
 <p>Type:
 <div class="highlight"><pre><span></span><code>Business Event
+</code></pre></div></p>
+<p>Name:
+<div class="highlight"><pre><span></span><code>PaymentService Transaction
 </code></pre></div></p>
 <p>Matching condition:
 <div class="highlight"><pre><span></span><code><span class="n">matchesValue</span><span class="p">(</span><span class="n">content</span><span class="p">,</span><span class="ss">&quot;Transaction complete.&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">payment</span><span class="p">.</span><span class="n">amount</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">payment</span><span class="p">.</span><span class="n">transactionid</span><span class="p">)</span>
 </code></pre></div></p>
-<p>Event type:
+<p>Event type (Static string):
 <div class="highlight"><pre><span></span><code><span class="n">astroshop</span><span class="p">.</span><span class="n">paymentservice</span><span class="p">.</span><span class="k">transaction</span><span class="p">.</span><span class="n">complete</span>
 </code></pre></div></p>
-<p>Event provider:
+<p>Event provider (Static string):
 <div class="highlight"><pre><span></span><code><span class="n">astroshop</span>
 </code></pre></div></p>
 <p>Field extraction:
@@ -1282,18 +1324,20 @@ document.addEventListener('DOMContentLoaded', function() {
 </code></pre></div></p>
 <p>This data extraction rule will generate a business event (bizevent) anytime the payment service successfully completes a payment transaction, as identified by the matching log message.  This new business event can then be used for business analytics and business observability use cases.</p>
 <p><img alt="BizEvent Processor" src="../img/configure-dynatrace_opp_transaction_bizevent.png" /></p>
-<p>Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
-<p>Name:
-<div class="highlight"><pre><span></span><code>PaymentService Fail Feature Flag Enabled
-</code></pre></div></p>
+<h4 id="davis-event">Davis Event<a class="headerlink" href="#davis-event" title="Permanent link">#</a></h4>
+<p>Open the Davis tab. Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
+<p><img alt="Davis Event Processor" src="../img/configure-dynatrace_opp_fail_davis_event.png" /></p>
 <p>Type:
-<div class="highlight"><pre><span></span><code>Davis Event
+<div class="highlight"><pre><span></span><code>Davis event
+</code></pre></div></p>
+<p>Name:
+<div class="highlight"><pre><span></span><code>PaymentService Failure
 </code></pre></div></p>
 <p>Matching condition:
-<div class="highlight"><pre><span></span><code><span class="n">matchesValue</span><span class="p">(</span><span class="n">status</span><span class="p">,</span><span class="ss">&quot;WARN&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">matchesValue</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="ss">&quot;PaymentService Fail Feature Flag Enabled&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="n">entity</span><span class="p">.</span><span class="n">cloud_application</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">matchesValue</span><span class="p">(</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ERROR&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">content</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="ss">&quot;payment&quot;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="n">entity</span><span class="p">.</span><span class="n">cloud_application</span><span class="p">)</span>
 </code></pre></div></p>
 <p>Event name:
-<div class="highlight"><pre><span></span><code>PaymentService Fail Feature Flag Enabled
+<div class="highlight"><pre><span></span><code>PaymentService is failing
 </code></pre></div></p>
 <p>Event description:
 <div class="highlight"><pre><span></span><code>Generate an error when calling the charge method.
@@ -1334,23 +1378,23 @@ document.addEventListener('DOMContentLoaded', function() {
 </tbody>
 </table>
 <p>This data extraction rule will generate a Davis event (alert) anytime the payment service fails to process a payment transaction due to the problem pattern (feature flag) being enabled.  This is an example of using OpenPipeline to alert on log data at ingest.</p>
-<p><img alt="Davis Event Processor" src="../img/configure-dynatrace_opp_fail_davis_event.png" /></p>
 <h4 id="metric-extraction">Metric Extraction<a class="headerlink" href="#metric-extraction" title="Permanent link">#</a></h4>
 <p>Click on the <code>Metric extraction</code> tab to create metric extraction rules.</p>
 <p>Add a new processor rule by clicking on <code>+ Processor</code>.  Configure the processor rule with the following:</p>
-<p>Name:
-<div class="highlight"><pre><span></span><code>PaymentService Failure
-</code></pre></div></p>
 <p>Type:
 <div class="highlight"><pre><span></span><code>Counter metric
 </code></pre></div></p>
+<p>Name:
+<div class="highlight"><pre><span></span><code>PaymentService Failure
+</code></pre></div></p>
 <p>Matching condition:
-<div class="highlight"><pre><span></span><code><span class="n">matchesValue</span><span class="p">(</span><span class="n">status</span><span class="p">,</span><span class="ss">&quot;WARN&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">matchesValue</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="ss">&quot;PaymentService Fail Feature Flag Enabled&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="n">entity</span><span class="p">.</span><span class="n">cloud_application</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">matchesValue</span><span class="p">(</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;ERROR&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">content</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="ss">&quot;payment&quot;</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">isNotNull</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="n">entity</span><span class="p">.</span><span class="n">cloud_application</span><span class="p">)</span>
 </code></pre></div></p>
 <p>Metric key:
 <div class="highlight"><pre><span></span><code><span class="n">log</span><span class="p">.</span><span class="n">astroshop</span><span class="p">.</span><span class="n">paymentservice</span><span class="p">.</span><span class="n">failure</span>
 </code></pre></div></p>
-<p>Dimensions:</p>
+<p>Click on Dimensions and add the following:
+Dimensions:</p>
 <table>
 <thead>
 <tr>
@@ -1364,14 +1408,9 @@ document.addEventListener('DOMContentLoaded', function() {
 <tr>
 <td>dt.entity.process_group</td>
 </tr>
-<tr>
-<td>k8s.namespace.name</td>
-</tr>
-<tr>
-<td>k8s.workload.name</td>
-</tr>
 </tbody>
 </table>
+<p>The Kubernetes fields <code>k8s.namespace.name</code>  and <code>k8s.workload.name</code>   are already added as well as cost center and cloud fields if available.        </p>
 <p>This metric extraction rule will create a counter metric to count the number of payment service failures caused by the feature flag being enabled.  Using DQL, one could count the number of log messages, summarize or make a timeseries of that data on the fly.  However, in order to optimize query costs and reduce raw log query volume, converting specific log data to metrics is a best practice for a use case such as this.</p>
 <p><img alt="Metric Processor" src="../img/configure-dynatrace_opp_transaction_metric.png" /></p>
 <div class="admonition tip">
@@ -1381,14 +1420,14 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>Click on <code>Save</code> to finish and save your new pipeline.</p>
 <h4 id="dynamic-route">Dynamic Route<a class="headerlink" href="#dynamic-route" title="Permanent link">#</a></h4>
 <p>A pipeline will not have any effect unless logs are configured to be routed to the pipeline. With dynamic routing, data is routed based on a matching condition. The matching condition is a DQL query that defines the data set you want to route.</p>
-<p>Click on <code>Dynamic Routing</code> to configure a route to the target pipeline. Click on <code>+ Dynamic Route</code> to add a new route.</p>
+<p>Click on <code>Process and contextualize</code> Select the  <code>Dynamic Routing</code> tab. Click on <code>+ Dynamic Route</code> on the right to add a new route.</p>
 <p><img alt="Dynamic Routes" src="../img/configure-dynatrace_opp_logs_routes.png" /></p>
 <p>Configure the <code>Dynamic Route</code> to use the <code>AstroShop PaymentService</code> pipeline.</p>
 <p>Name:
 <div class="highlight"><pre><span></span><code>AstroShop PaymentService
 </code></pre></div></p>
 <p>Matching condition:
-<div class="highlight"><pre><span></span><code><span class="n">matchesValue</span><span class="p">(</span><span class="n">k8s</span><span class="p">.</span><span class="n">namespace</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="ss">&quot;astroshop&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">matchesValue</span><span class="p">(</span><span class="n">k8s</span><span class="p">.</span><span class="n">container</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="ss">&quot;paymentservice&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">matchesValue</span><span class="p">(</span><span class="n">k8s</span><span class="p">.</span><span class="n">namespace</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="ss">&quot;astroshop&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">matchesValue</span><span class="p">(</span><span class="n">k8s</span><span class="p">.</span><span class="n">container</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="ss">&quot;payment&quot;</span><span class="p">)</span>
 </code></pre></div></p>
 <p>Pipeline:
 <div class="highlight"><pre><span></span><code>AstroShop PaymentService
@@ -1397,10 +1436,15 @@ document.addEventListener('DOMContentLoaded', function() {
 <p><img alt="Add Route" src="../img/configure-dynatrace_opp_add_route.png" /></p>
 <p>Validate that the route is enabled in the <code>Status</code> column. Click on <code>Save</code> to save the dynamic route table configuration.</p>
 <p><img alt="Save Routes" src="../img/configure-dynatrace_opp_save_routes.png" /></p>
-<p>Allow the <code>paymentservice</code> from <code>astroshop</code> to generate new log data that will be routed through the new pipeline (3-5 minutes).</p>
+<p>Allow the <code>payment</code> from <code>astroshop</code> to generate new log data that will be routed through the new pipeline (3-5 minutes).</p>
 <h3 id="query-logs_2">Query Logs<a class="headerlink" href="#query-logs_2" title="Permanent link">#</a></h3>
 <p>Return to the <code>Logs</code> app and filter on the logs generated by the payment service.</p>
-<div class="highlight"><pre><span></span><code><span class="n">k8s</span><span class="p">.</span><span class="n">namespace</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;astroshop&quot;</span><span class="w"> </span><span class="n">k8s</span><span class="p">.</span><span class="n">container</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;paymentservice&quot;</span><span class="w"> </span>
+<!-- 
+TODO: Ask Tony, why are the logs parsed before? Which config is zuständig for this changes?
+TODO: Replace image? 
+
+-->
+<div class="highlight"><pre><span></span><code><span class="n">k8s</span><span class="p">.</span><span class="n">namespace</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;astroshop&quot;</span><span class="w"> </span><span class="n">k8s</span><span class="p">.</span><span class="n">container</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;payment&quot;</span><span class="w"> </span>
 </code></pre></div>
 <p><img alt="PaymentService Logs" src="../img/configure-dynatrace_opp_query_new_logs.png" /></p>
 <h2 id="continue">Continue<a class="headerlink" href="#continue" title="Permanent link">#</a></h2>

@@ -410,9 +410,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#dynakube-log-module-spec" class="md-nav__link">
+  <a href="#dynakubes-kubernetes-monitoring-and-application-observability-log-management" class="md-nav__link">
     <span class="md-ellipsis">
-      Dynakube Log Module Spec
+      Dynakubes Kubernetes Monitoring and Application Observability + Log Management
     </span>
   </a>
   
@@ -591,9 +591,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#dynakube-log-module-spec" class="md-nav__link">
+  <a href="#dynakubes-kubernetes-monitoring-and-application-observability-log-management" class="md-nav__link">
     <span class="md-ellipsis">
-      Dynakube Log Module Spec
+      Dynakubes Kubernetes Monitoring and Application Observability + Log Management
     </span>
   </a>
   
@@ -701,7 +701,8 @@ document.addEventListener('DOMContentLoaded', function() {
 <p>Choose <code>Kubernetes platform monitoring + Application observability</code> as your observability option.  This will define your Dynakube spec/configuration.</p>
 <p>Toggle the <code>Log Management and Analytics</code> flag/setting to <code>Enabled</code>.  Expand the option and select <code>Fully managed with Dynatrace Log Module</code>.</p>
 <p>Check the box for <code>Restrict Log monitoring to certain resources</code>.  In the <code>Namespaces</code> field, type <code>astroshop</code>.  This will filter log ingestion on logs related to the <code>astroshop</code> Kubernetes namespace.</p>
-<p>Toggle the <code>Extensions</code> flag/setting to <code>Disabled</code>.  We will not be using this feature in this lab.</p>
+<p>Toggle the <code>Extensions</code> flag/setting to <code>Disabled</code>.  We will not be using this feature in this lab.
+Toggle the <code>Telemetry endpoints for data ingest</code> flag/setting to <code>Disabled</code>.  We will not be using this feature in this lab.</p>
 <p><img alt="Select Distribution" src="../img/deploy-dynatrace_k8s_select_distribution.png" /></p>
 <p><strong>3. Configure cluster</strong></p>
 <p>Give your Kubernetes cluster a name, enter <code>enablement-log-ingest-101</code>.</p>
@@ -725,20 +726,47 @@ document.addEventListener('DOMContentLoaded', function() {
 <h3 id="deploy-dynakube">Deploy Dynakube<a class="headerlink" href="#deploy-dynakube" title="Permanent link">#</a></h3>
 <p>Locate the <code>dynakube.yaml</code> file that you downloaded from your tenant.  With the file (directory) open, navigate back to your GitHub Codespaces instance.  Click and hold to drag and drop the <code>dynakube.yaml</code> file into your Codespaces instance.</p>
 <p><img alt="Copy Dynakube" src="../img/deploy-dynatrace_copy_dynakube.gif" /></p>
-<div class="admonition tip">
+<div class="admonition warning">
 <p class="admonition-title">ActiveGate Container Resources</p>
-<p>Consider changing the ActiveGate's resources for better performance in this lab environment
+<p>Please change the ActiveGate's resources for better performance in this lab environment. Dynatrace default deployment of the Dynakaube brings a separation of concerns architecture for production environments where it separates the monitoring traffic from kubernetes monitoring and agent traffic from application observability.
 <div class="highlight"><pre><span></span><code><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DynaKube</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">activeGate</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">resources</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">requests</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100m</span>
-<span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512Mi</span>
-<span class="w">      </span><span class="nt">limits</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500m</span>
-<span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">768Mi</span>
-</code></pre></div></p>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enablement-log-ingest-101</span>
+<span class="c1">#...</span>
+<span class="nt">activeGate</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">capabilities</span><span class="p">:</span>
+<span class="hll"><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes-monitoring</span>
+</span><span class="w">  </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">requests</span><span class="p">:</span>
+<span class="hll"><span class="w">      </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100m</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512Mi</span>
+</span><span class="w">    </span><span class="nt">limits</span><span class="p">:</span>
+<span class="hll"><span class="w">      </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500m</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">768Mi</span>
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="c1">#...</span>
+<span class="nn">---</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DynaKube</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">metadata</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enablement-log-ingest-101-agents</span>
+<span class="c1">#...</span>
+<span class="nt">oneAgent</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">applicationMonitoring</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="nt">activeGate</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">capabilities</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">routing</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debugging</span>
+<span class="w">  </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">requests</span><span class="p">:</span>
+<span class="hll"><span class="w">      </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100m</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512Mi</span>
+</span><span class="w">    </span><span class="nt">limits</span><span class="p">:</span>
+<span class="hll"><span class="w">      </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500m</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">768Mi</span>
+</span><span class="hll"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</span><span class="c1">#...</span>
+</code></pre></div>
+ This is a sandbox so we are fine trimming the ressources and having only 1 replicaset per dynakube.</p>
 </div>
 <p>Deploy the Dynakube using <code>kubectl</code>.
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>dynakube.yaml
@@ -793,6 +821,13 @@ document.addEventListener('DOMContentLoaded', function() {
 <td>90s</td>
 </tr>
 <tr>
+<td>enablement-log-ingest-101-agents-activegate-0</td>
+<td>1/1</td>
+<td>Running</td>
+<td>0</td>
+<td>90s</td>
+</tr>
+<tr>
 <td>enablement-log-ingest-101-logmonitoring-dxrsh</td>
 <td>1/1</td>
 <td>Running</td>
@@ -801,25 +836,23 @@ document.addEventListener('DOMContentLoaded', function() {
 </tr>
 </tbody>
 </table>
-<h3 id="dynakube-log-module-spec">Dynakube Log Module Spec<a class="headerlink" href="#dynakube-log-module-spec" title="Permanent link">#</a></h3>
+<h3 id="dynakubes-kubernetes-monitoring-and-application-observability-log-management">Dynakubes Kubernetes Monitoring and Application Observability + Log Management<a class="headerlink" href="#dynakubes-kubernetes-monitoring-and-application-observability-log-management" title="Permanent link">#</a></h3>
+<p>By default Dynatrace splits the ActiveGate responsibilities into two groups is recommended: One group handling everything related to Kubernetes platform monitoring, including KSPM, and the other managing Agent traffic routing, telemetry ingest, and extensions. This separation provides several advantages, to learn more about the advantages <a href="https://docs.dynatrace.com/docs/ingest-from/setup-on-k8s/guides/deployment-and-configuration/resource-management/ag-resource-limits#using-a-dedicated-activegate-for-kubernetes-platform-monitoring">please read here</a></p>
 <p>Enabling <strong>Log Management and Analytics</strong> with the option <code>Fully managed with Dynatrace Log Module</code> will add the Log Module to the Dynakube spec.</p>
-<div class="highlight"><span class="filename">Dynakube sample - Kubernetes platform monitoring + Application Observability + Log Management enabled</span><pre><span></span><code><span class="nn">---</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynatrace.com/v1beta3</span>
+<div class="highlight"><span class="filename">Dynakube:Kubernetes platform monitoring + Dynakube: Application Observability + Log Management enabled</span><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynatrace.com/v1beta6</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DynaKube</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enablement-log-ingest-101</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynatrace</span>
-<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">feature.dynatrace.com/k8s-app-enabled</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dynatrace.com/created-by</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dynatrace.kubernetes&quot;</span>
+<span class="c1"># Link to api reference for further information: https://docs.dynatrace.com/docs/ingest-from/setup-on-k8s/reference/dynakube-parameters</span>
 <span class="nt">spec</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">apiUrl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://&lt;tenant&gt;/api</span>
-<span class="w">  </span><span class="nt">metadataEnrichment</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">oneAgent</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">applicationMonitoring</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">  </span><span class="nt">tokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enablement-log-ingest-101</span>
 <span class="w">  </span><span class="nt">activeGate</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">capabilities</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">routing</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes-monitoring</span>
 <span class="w">    </span><span class="nt">resources</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">requests</span><span class="p">:</span>
@@ -828,27 +861,50 @@ document.addEventListener('DOMContentLoaded', function() {
 <span class="w">      </span><span class="nt">limits</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500m</span>
 <span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">768Mi</span>
-<span class="w">  </span><span class="nt">templates</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">logMonitoring</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">imageRef</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">public.ecr.aws/dynatrace/dynatrace-logmodule</span>
-<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.309.66.20250401-150134</span>
-<span class="w">  </span><span class="nt">logMonitoring</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">ingestRuleMatchers</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">attribute</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k8s.namespace.name</span>
-<span class="w">        </span><span class="nt">values</span><span class="p">:</span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">astroshop</span>
+<span class="w">    </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="hll"><span class="w">  </span><span class="nt">templates</span><span class="p">:</span>
+</span><span class="hll"><span class="w">    </span><span class="nt">logMonitoring</span><span class="p">:</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">imageRef</span><span class="p">:</span>
+</span><span class="hll"><span class="w">        </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">public.ecr.aws/dynatrace/dynatrace-logmodule</span>
+</span><span class="hll"><span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.331.49.20260227-104933</span>
+</span><span class="hll"><span class="w">  </span><span class="nt">logMonitoring</span><span class="p">:</span>
+</span><span class="hll"><span class="w">    </span><span class="nt">ingestRuleMatchers</span><span class="p">:</span>
+</span><span class="hll"><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">attribute</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k8s.namespace.name</span>
+</span><span class="hll"><span class="w">        </span><span class="nt">values</span><span class="p">:</span>
+</span><span class="hll"><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">astroshop</span>
+</span><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynatrace.com/v1beta6</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DynaKube</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enablement-log-ingest-101-agents</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dynatrace</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dynatrace.com/created-by</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dynatrace.kubernetes&quot;</span>
+<span class="c1"># Link to api reference for further information: https://docs.dynatrace.com/docs/ingest-from/setup-on-k8s/reference/dynakube-parameters</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">apiUrl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https:/&lt;tenant&gt;/api</span>
+<span class="w">  </span><span class="nt">tokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enablement-log-ingest-101</span>
+<span class="w">  </span><span class="nt">metadataEnrichment</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">oneAgent</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">applicationMonitoring</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">  </span><span class="nt">activeGate</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">capabilities</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">routing</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debugging</span>
+<span class="w">    </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">requests</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100m</span>
+<span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">512Mi</span>
+<span class="w">      </span><span class="nt">limits</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500m</span>
+<span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">768Mi</span>
+<span class="w">    </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 </code></pre></div>
 <p>The Log Module runs as a container in a standalone pod (as part of a daemonset) on each node.  The <code>spec.templates.imageRef</code> defines the container image and tag to be used.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">templates</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">logMonitoring</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">imageRef</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">public.ecr.aws/dynatrace/dynatrace-logmodule</span>
-<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.309.66.20250401-150134</span>
-</code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">ImagePullBackOff Error</p>
-<p>In case you encounter an <strong>ImagePullBackOff</strong> error, check <a href="https://gallery.ecr.aws/dynatrace/dynatrace-logmodule" target="_blank">public.ecr.aws</a> to make sure the container image with that tag exists.  If not, change the value to use an existing one.
+<p>In case you encounter an <strong>ImagePullBackOff</strong> error (using sprint or dev tenants), check <a href="https://gallery.ecr.aws/dynatrace/dynatrace-logmodule" target="_blank">public.ecr.aws</a> to make sure the container image with that tag exists.  If not, change the value to use an existing one.
 <img alt="Container Registry" src="../img/deploy-dynatrace_log_module_container_registry.png" /></p>
 </div>
 <p>Enabling the option <strong>Restrict Log monitoring to certain resources</strong> option will add <code>spec.logMonitoring.ingestRuleMatchers</code> to the Dynakube definition.</p>
@@ -874,7 +930,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <p><img alt="Clusters" src="../img/deploy-dynatrace_k8s_clusters.png" /></p>
 <p>From the Cluster overview pop-out, in the top right corner, click on the <code>...</code> ellipsis icon, and then click on the drilldown for <strong>Log ingest rules</strong>.</p>
 <p><img alt="Log Ingest Rules Drilldown" src="../img/deploy-dynatrace_k8s_cluster_drill_log_ingest_rules.png" /></p>
-<p>This will open the <code>Kubernetes Classic</code> app and the connection settings for the Kubernetes Cluster.  In the Log Monitoring settings, the Log Ingest rules are shown.  You'll find the rule that was created by the Dynakube that matches the configuration in the <code>dynakube.yaml</code> spec.  It should be configured to only ingest logs from the <code>astroshop</code> namespace.</p>
+<p>This will open the <code>Kubernetes</code> app and the connection settings for the Kubernetes Cluster.  In the Log Monitoring settings, the Log Ingest rules are shown.  You'll find the rule that was created by the Dynakube that matches the configuration in the <code>dynakube.yaml</code> spec.  It should be configured to only ingest logs from the <code>astroshop</code> namespace.</p>
 <p><img alt="Log Ingest Rule" src="../img/deploy-dynatrace_k8s_cluster_log_ingest_rule_setting.png" /></p>
 <h3 id="refresh-application-pods">Refresh Application Pods<a class="headerlink" href="#refresh-application-pods" title="Permanent link">#</a></h3>
 <p>Now that Dynatrace is deployed, let's refresh/recycle the application pods for <code>astroshop</code> to inject the OneAgent code modules.</p>
