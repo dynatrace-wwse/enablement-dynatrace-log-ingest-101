@@ -1147,8 +1147,9 @@ deployTodoApp(){
 
 deployAstroshop(){
 
-  printInfoSection "Deploying Astroshop"
-  
+  ASTROSHOPDIR="astroshop"
+
+  printInfoSection "Deploying Demo.Live Astroshop"
   if [[ "$ARCH" != "x86_64" ]]; then
     printWarn "This version of the Astroshop only supports AMD/x86 architectures and not ARM, exiting deployment..."
     return 1
@@ -1156,50 +1157,44 @@ deployAstroshop(){
 
   getNextFreeAppPort true
   PORT=$(getNextFreeAppPort)
+
   if [[ $? -ne 0 ]]; then
     printWarn "Application can't be deployed"
     return 1
   fi
 
-  # Verify if cert-manager is installed in subshell to not exit function, if not, then install it
-  (assertRunningPod cert-manager cert-manager >/dev/null 2>&1)
-  certmanager_installed=$?
-  if [[ $certmanager_installed -ne 0 ]]; then
-    printWarn "Certmanager is not installed, this version of Astroshop needs it, installing it..."
-    deployCertmanager
+  NAMESPACE="astroshop"
+
+  dynatraceEvalReadSaveCredentials
+
+  if [[ -z "${DT_INGEST_TOKEN}" || -z "${DT_OTEL_ENDPOINT}" ]]; then  
+    printWarn "DT_INGEST_TOKEN and/or DT_OTEL_ENDPOINT are not setted. DT_OTEL_ENDPOINT is calculated with the function 'dynatraceEvalReadSaveCredentials' and the env var DT_ENVIRONMENT"  
   else
-    printInfo "Certmanager is installed, continuing with deployment"
+    printInfo "OTEL Configuration URL $DT_OTEL_ENDPOINT and Ingest Token $DT_INGEST_TOKEN"  
   fi
 
-  helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+  kubectl apply -n $NAMESPACE -f $REPO_PATH/.devcontainer/apps/$ASTROSHOPDIR/yaml/astroshop-deployment.yaml
 
-  helm dependency build $REPO_PATH/.devcontainer/apps/astroshop/helm/dt-otel-demo-helm
+  kubectl -n $NAMESPACE create secret generic dt-credentials --from-literal="DT_API_TOKEN=$DT_INGEST_TOKEN" --from-literal="DT_ENDPOINT=$DT_OTEL_ENDPOINT"
+  
+  printInfo "Waiting for all pods of $NAMESPACE to be scheduled"
+  
+  printWarn "Not waiting for all pods of $NAMESPACE to be scheduled, this can take a while, type 'kubectl get pod -n $NAMESPACE --all' to see the status of them"
+  
+  printInfo "Change astroshop frontend service from ClusterIP to NodePort so it can be exposed"
+  
+  kubectl patch service frontend-proxy --namespace=$NAMESPACE --patch='{"spec": {"type": "NodePort"}}'
 
-  kubectl create namespace astroshop
+  printInfo "Exposing the $NAMESPACE frontend in NodePort $PORT"
 
-  DT_OTEL_ENDPOINT=$DT_TENANT/api/v2/otlp
+  kubectl patch service frontend-proxy --namespace=$NAMESPACE --type='json' --patch="[{\"op\": \"replace\", \"path\": \"/spec/ports/0/nodePort\", \"value\":$PORT}]"
 
-  printInfo "OTEL Configuration URL $DT_OTEL_ENDPOINT and Ingest Token $DT_INGEST_TOKEN"  
+  waitAppCanHandleRequests $PORT 60
 
-  helm upgrade --install astroshop -f $REPO_PATH/.devcontainer/apps/astroshop/helm/dt-otel-demo-helm-deployments/values.yaml --set default.image.repository=docker.io/shinojosa/astroshop --set default.image.tag=1.12.0 --set collector_tenant_endpoint=$DT_OTEL_ENDPOINT --set collector_tenant_token=$DT_INGEST_TOKEN -n astroshop $REPO_PATH/.devcontainer/apps/astroshop/helm/dt-otel-demo-helm
+  PUBLIC_IP=$(curl ifconfig.me)
 
-  printInfo "Change astroshop-frontendproxy service from LoadBalancer to NodePort"
-  kubectl patch service astroshop-frontendproxy --namespace=astroshop --patch='{"spec": {"type": "NodePort"}}'
+  printInfo "Astroshop deployed succesfully and handling request in http://$PUBLIC_IP:$PORT"
 
-  printInfo "Exposing the astroshop-frontendproxy in NodePort $PORT"
-  kubectl patch service astroshop-frontendproxy --namespace=astroshop --type='json' --patch="[{\"op\": \"replace\", \"path\": \"/spec/ports/0/nodePort\", \"value\":$PORT}]"
-
-  printInfo "Stopping all cronjobs from Demo Live since they are not needed with this scenario"
-  kubectl get cronjobs -n astroshop -o json | jq -r '.items[] | .metadata.name' | xargs -I {} kubectl patch cronjob {} -n astroshop --patch '{"spec": {"suspend": true}}'
-
-  # Listing all cronjobs
-  kubectl get cronjobs -n astroshop
-
-  waitForAllPods astroshop
-
-  waitAppCanHandleRequests $PORT
-
-  printInfo "Astroshop deployed succesfully and handling request in port $PORT"
 }
 
 deployBugZapperApp(){
@@ -1398,7 +1393,6 @@ deployApp(){
       if [[ $delete ]]; then
         printInfoSection "Undeploying astroshop..."
         kubectl delete ns astroshop --force
-        certmanagerDelete
       else
         deployAstroshop
       fi
@@ -1752,6 +1746,85 @@ checkHost(){
     printInfo "✅ All requirements are met for running the enablement-framework. Navigate to the .devcontainer/ folder then 'make start' to start your enablement jouney 🚀"
   fi
 
+}
+
+
+freeUpSpace(){
+
+  printInfoSection "Freeing up disk space"
+  printInfo "Disk usage before cleanup:"
+  df -h / | tail -1 | awk '{printInfo "  Used: "$3" / "$2" ("$5" full) — Free: "$4}'
+  df -h /
+
+  # APT cache cleanup
+  if command -v apt-get >/dev/null 2>&1; then
+    printInfo "Cleaning APT cache and removing unused packages..."
+    sudo apt-get autoremove -y 2>/dev/null
+    sudo apt-get autoclean -y 2>/dev/null
+    sudo apt-get clean 2>/dev/null
+  else
+    printWarn "apt-get not found, skipping APT cleanup"
+  fi
+
+  # Systemd journal logs
+  if command -v journalctl >/dev/null 2>&1; then
+    printInfo "Vacuuming journal logs (keeping last 7 days, max 200M)..."
+    sudo journalctl --vacuum-time=7d 2>/dev/null || true
+    sudo journalctl --vacuum-size=200M 2>/dev/null || true
+  else
+    printWarn "journalctl not found, skipping journal cleanup"
+  fi
+
+  # Python pip cache
+  if command -v pip >/dev/null 2>&1; then
+    printInfo "Purging pip cache..."
+    pip cache purge 2>/dev/null || true
+  elif command -v pip3 >/dev/null 2>&1; then
+    printInfo "Purging pip3 cache..."
+    pip3 cache purge 2>/dev/null || true
+  else
+    printWarn "pip not found, skipping Python cache cleanup"
+  fi
+
+  # Node package manager caches
+  if command -v npm >/dev/null 2>&1; then
+    printInfo "Cleaning npm cache..."
+    npm cache clean --force 2>/dev/null || true
+  fi
+  if command -v yarn >/dev/null 2>&1; then
+    printInfo "Cleaning yarn cache..."
+    yarn cache clean 2>/dev/null || true
+  fi
+  if command -v pnpm >/dev/null 2>&1; then
+    printInfo "Pruning pnpm store..."
+    pnpm store prune 2>/dev/null || true
+  fi
+
+  # Docker cleanup
+  if command -v docker >/dev/null 2>&1; then
+    if docker info >/dev/null 2>&1; then
+      printInfo "Pruning unused Docker resources (images, containers, volumes, build cache)..."
+      docker system prune -af --volumes 2>/dev/null || true
+      docker builder prune -af 2>/dev/null || true
+    else
+      printWarn "Docker is installed but not accessible, skipping Docker cleanup"
+    fi
+  else
+    printWarn "Docker not found, skipping Docker cleanup"
+  fi
+
+  # Temp files older than 7 days
+  printInfo "Removing temp files older than 7 days..."
+  sudo find /tmp -mindepth 1 -mtime +7 -delete 2>/dev/null || true
+
+  # User cache directories older than 30 days
+  printInfo "Cleaning stale user cache directories (older than 30 days)..."
+  find ~/.cache -mindepth 1 -maxdepth 1 -type d -mtime +30 -exec rm -rf {} + 2>/dev/null || true
+
+  printInfo "Disk usage after cleanup:"
+  df -h /
+
+  printInfo "✅ Disk space cleanup complete"
 }
 
 # Custom functions for each repo can be added in my_functions.sh

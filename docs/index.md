@@ -43,13 +43,11 @@ During this hands-on training lab, we’ll learn how to capture logs from Kubern
 ### Technologies Used
 - [Dynatrace](https://www.dynatrace.com/trial)
 - [Kubernetes Kind](https://kind.sigs.k8s.io/)
-    - tested on Kind tag 0.27.0
-- [Cert Manager](https://cert-manager.io/) - *prerequisite for OpenTelemetry Operator
-    - tested on cert-manager v1.15.3
+    - tested on Kind tag 1.30.0
 - [Dynatrace Operator](https://github.com/Dynatrace/dynatrace-operator)
-    - tested on v1.4.2 (April 2025)
+    - tested on v1.8.1 (Mar 2026)
 - Dynatrace OneAgent
-    - tested on v1.309 (April 2025)
+    - tested on v1.309 (Mar 2026)
 
 ### Reference Architecture
 
