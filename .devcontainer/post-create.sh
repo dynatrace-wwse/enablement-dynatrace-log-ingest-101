@@ -9,18 +9,10 @@ startKindCluster
 
 installK9s
 
-# Dynatrace Operator can be deployed automatically
-#dynatraceDeployOperator
-
-# You can deploy CNFS or AppOnly
 deployAstroshop
 
-# If you want to deploy your own App, just create a function in the functions.sh file and call it here.
-# deployMyCustomApp
 deployCronJobs
-# If the Codespace was created via Workflow end2end test will be done, otherwise
-# it'll verify if there are error in the logs and will show them in the greeting as well a monitoring 
-# notification will be sent on the instantiation details
+
 finalizePostCreation
 
 printInfoSection "Your dev container finished creating"

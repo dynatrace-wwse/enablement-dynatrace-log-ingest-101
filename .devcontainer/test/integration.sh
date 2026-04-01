@@ -8,6 +8,8 @@ assertRunningPod astroshop ad
 
 assertRunningPod astroshop cart
 
+assertRunningPod astroshop checkout
+
 assertRunningPod astroshop frontend
 
 assertRunningPod astroshop frontend-proxy
