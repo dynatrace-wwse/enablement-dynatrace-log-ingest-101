@@ -3,12 +3,11 @@
 source .devcontainer/util/source_framework.sh
 
 printInfoSection "Running integration Tests for $RepositoryName"
-assertRunningPod astroshop adservice
 
-assertRunningPod astroshop cartservice
+assertRunningPod astroshop ad
 
-assertRunningPod astroshop checkoutservice
+assertRunningPod astroshop cart
 
-assertRunningPod cert-manager cainjector
+assertRunningPod astroshop checkout
 
 assertRunningApp 30100
