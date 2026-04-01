@@ -10,4 +10,8 @@ assertRunningPod astroshop cart
 
 assertRunningPod astroshop checkout
 
+assertRunningPod astroshop frontend
+
+assertRunningPod astroshop frontend-proxy
+
 assertRunningApp 30100
