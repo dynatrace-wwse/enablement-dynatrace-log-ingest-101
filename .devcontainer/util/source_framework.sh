@@ -62,6 +62,7 @@ if ! (
   git sparse-checkout set --no-cone \
     '.devcontainer/util/*' \
     '.devcontainer/p10k/*' \
+    '/.devcontainer/test/test_functions.sh' \
     '.devcontainer/apps/*' \
     '/.devcontainer/Makefile' \
     '/.devcontainer/makefile.sh' \
