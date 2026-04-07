@@ -4,7 +4,7 @@
 [![Dynatrace](https://img.shields.io/badge/Dynatrace-Intelligence-purple?logo=dynatrace&logoColor=white)](https://dynatrace-wwse.github.io/codespaces-framework/dynatrace-integration/#mcp-server-integration)
 [![Mastering](https://img.shields.io/badge/Mastering-Complexity-8A2BE2?logo=dynatrace)](https://dynatrace-wwse.github.io)
 [![Downloads](https://img.shields.io/docker/pulls/shinojosa/dt-enablement?logo=docker)](https://hub.docker.com/r/shinojosa/dt-enablement)
-![Integration tests](https://github.com/dynatrace-wwse/enablement-dynatrace-log-ingest-101/actions/workflows/integration-tests.yaml/badge.svg)
+[![Integration tests](https://github.com/dynatrace-wwse/enablement-dynatrace-log-ingest-101/actions/workflows/integration-tests.yaml/badge.svg)](https://github.com/dynatrace-wwse/enablement-dynatrace-log-ingest-101/actions)
 [![Version](https://img.shields.io/github/v/release/dynatrace-wwse/enablement-dynatrace-log-ingest-101?color=blueviolet)](https://github.com/dynatrace-wwse/enablement-dynatrace-log-ingest-101/releases)
 [![Commits](https://img.shields.io/github/commits-since/dynatrace-wwse/enablement-dynatrace-log-ingest-101/latest?color=ff69b4&include_prereleases)](https://github.com/dynatrace-wwse/enablement-dynatrace-log-ingest-101/graphs/commit-activity)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?color=green)](https://github.com/dynatrace-wwse/enablement-dynatrace-log-ingest-101/blob/main/LICENSE)
