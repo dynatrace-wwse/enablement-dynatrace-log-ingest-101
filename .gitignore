@@ -168,7 +168,7 @@ site/*
 # no env files
 .devcontainer/util/.env*
 .devcontainer/.env*
-.devcontainer/runlocal/.env*
+.devcontainer/.env*
 
 #no count
 .devcontainer/util/.count*
@@ -212,3 +212,10 @@ mkdocs-base.yaml
 # Omit run file
 synchronizer/run.sh
 
+
+
+# Framework base config fetched at runtime
+mkdocs-base.yaml
+
+# Temporary Dockerfile from cache for local builds
+Dockerfile.framework
