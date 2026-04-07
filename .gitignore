@@ -206,6 +206,9 @@ dist-ssr
 # Omit Cache
 .devcontainer/.cache/
 
+# Framework base config fetched at runtime
+mkdocs-base.yaml
+
 # Omit run file
 synchronizer/run.sh
 
