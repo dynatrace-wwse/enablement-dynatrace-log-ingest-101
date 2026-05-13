@@ -606,9 +606,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <h2 id="enable-astroshop-problem-patterns">Enable Astroshop Problem Patterns<a class="headerlink" href="#enable-astroshop-problem-patterns" title="Permanent link">#</a></h2>
 <p>The <code>astroshop</code> demo provides several feature flags that you can use to simulate different scenarios. These flags are managed by flagd, a simple feature flag service that supports OpenFeature.</p>
-<p>Flag values can be changed through the user interface provided at http://localhost:30100/feature when running the demo. Changing the values through this user interface will be reflected in the flagd service.</p>
-<p>Navigate to the feature flag user interface by adding <code>/feature</code> to the end of your Codespaces instance URL.</p>
-<p>For example: <code>https://super-duper-capybara-4wvj9xx7wpjh76qr-30100.app.github.dev/feature</code></p>
+<p>Flag values can be changed through the feature flag UI — open the Astroshop URL from the greeting (<code>printGreeting</code>) and append <code>/feature</code>. Changing the values through this user interface will be reflected in the flagd service.</p>
+<p>Navigate to the feature flag UI by adding <code>/feature</code> to the end of your app URL. In GitHub Codespaces, the URL will look similar to <code>https://your-codespace-name-80.app.github.dev/feature</code>.</p>
 <p>Locate the flag <strong>paymentFailure</strong>.  Click the drop down box and change it from <code>off</code> to a percentage, in this case we are choosing <code>50%</code>.  Click <code>save</code> at the top of the page.  The feature flag should start working within a minute.</p>
 <p><img alt="Flagd Configurator" src="../img/analyze-logs_enable_feature_flag.png" /></p>
 <h2 id="analyze-logs-in-context">Analyze Logs in Context<a class="headerlink" href="#analyze-logs-in-context" title="Permanent link">#</a></h2>

@@ -768,13 +768,13 @@ document.addEventListener('DOMContentLoaded', function() {
 </ul>
 </div>
 <h3 id="wait-for-codespace">Wait for Codespace<a class="headerlink" href="#wait-for-codespace" title="Permanent link">#</a></h3>
-<p>We know your time is very valuable. This codespace takes around 7-10 minutes to be fully operational. A local Kubernetes (<a href="https://kind.sigs.k8s.io/" target="_blank">kind</a>) cluster will be configured and in it a sample application, AstroShop, will be deployed. To make your experience better, we are also installing and configuring tools like:</p>
+<p>We know your time is very valuable. This codespace takes around 7-10 minutes to be fully operational. A local Kubernetes (<a href="https://k3d.io/" target="_blank">k3d</a>) cluster will be configured and in it a sample application, AstroShop, will be deployed. To make your experience better, we are also installing and configuring tools like:</p>
 <p><strong>k9s kubectl helm node jq python3 gh</strong></p>
 <h2 id="explore-codespace">Explore Codespace<a class="headerlink" href="#explore-codespace" title="Permanent link">#</a></h2>
 <p>Your Codespace has now deployed the following resources:</p>
 <ul>
 <li>
-<p>A local Kubernetes (<a href="https://kind.sigs.k8s.io/" target="_blank">kind</a>) cluster, with some pre-deployed apps that will be used later in the demo.</p>
+<p>A local Kubernetes (<a href="https://k3d.io/" target="_blank">k3d</a>) cluster, with some pre-deployed apps that will be used later in the demo.</p>
 </li>
 <li>
 <p>CronJobs running in Kubernetes that generate some sample log data</p>
@@ -811,7 +811,7 @@ document.addEventListener('DOMContentLoaded', function() {
 kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>default
 </code></pre></div></p>
 <h3 id="app-exposure">App exposure<a class="headerlink" href="#app-exposure" title="Permanent link">#</a></h3>
-<p>The Astroshop application is exposed via NodePort and it's mapping port 8080 to Cluster port 30100.</p>
+<p>The Astroshop application is accessible via the nginx ingress controller. The URL is shown in the greeting — run <code>printGreeting</code> to display it.</p>
 <p>Verify service:
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>astroshop-frontendproxy<span class="w"> </span>-n<span class="w"> </span>astroshop
 </code></pre></div></p>
