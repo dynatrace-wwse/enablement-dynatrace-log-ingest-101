@@ -28,8 +28,8 @@ body {
 
 /* ---- Typography — override Material's 12.8px default ---- */
 .md-typeset {
-  font-size: 1rem;
-  line-height: 1.75;
+  font-size: .875rem;
+  line-height: 1.7;
 }
 
 /* Balanced headings (no orphan words) */
