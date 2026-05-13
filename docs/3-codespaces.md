@@ -19,7 +19,7 @@ Click to open Codespaces for this lab repository:
         - select any region, preferably one closest to your Dynatrace tenant
 
 ### Wait for Codespace
-We know your time is very valuable. This codespace takes around 7-10 minutes to be fully operational. A local Kubernetes ([kind](https://kind.sigs.k8s.io/){target="_blank"}) cluster will be configured and in it a sample application, AstroShop, will be deployed. To make your experience better, we are also installing and configuring tools like:
+We know your time is very valuable. This codespace takes around 7-10 minutes to be fully operational. A local Kubernetes ([k3d](https://k3d.io/){target="_blank"}) cluster will be configured and in it a sample application, AstroShop, will be deployed. To make your experience better, we are also installing and configuring tools like:
 
 **k9s kubectl helm node jq python3 gh**
 
@@ -27,7 +27,7 @@ We know your time is very valuable. This codespace takes around 7-10 minutes to 
 
 Your Codespace has now deployed the following resources:
 
-- A local Kubernetes ([kind](https://kind.sigs.k8s.io/){target="_blank"}) cluster, with some pre-deployed apps that will be used later in the demo.
+- A local Kubernetes ([k3d](https://k3d.io/){target="_blank"}) cluster, with some pre-deployed apps that will be used later in the demo.
 
 - CronJobs running in Kubernetes that generate some sample log data
 
@@ -82,7 +82,7 @@ kubectl get events -n default
 ```
 
 ### App exposure
-The Astroshop application is exposed via NodePort and it's mapping port 8080 to Cluster port 30100.
+The Astroshop application is accessible via the nginx ingress controller. The URL is shown in the greeting — run `printGreeting` to display it.
 
 Verify service:
 ```sh
