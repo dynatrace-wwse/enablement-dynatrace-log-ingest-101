@@ -14,4 +14,4 @@ assertRunningPod astroshop frontend
 
 assertRunningPod astroshop frontend-proxy
 
-assertRunningApp 30100
+assertRunningApp astroshop
