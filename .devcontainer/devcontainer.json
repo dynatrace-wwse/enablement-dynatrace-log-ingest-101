@@ -33,11 +33,11 @@
   },
   	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [
-		8080
+		80
 	],
 	// add labels
 	"portsAttributes": {
-		"8080": { "label": "Application Web UI" }
+		"80": { "label": "Application Web UI" }
 	},
   // minimal CPU when running DT components and apps.
 	"hostRequirements": {
