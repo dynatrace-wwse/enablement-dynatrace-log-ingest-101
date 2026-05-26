@@ -1,5 +1,4 @@
 # Deploy Dynatrace
---8<-- "snippets/send-bizevent/4-deploy-dynatrace.js"
 
 Dynatrace provides integrated log management and analytics for your Kubernetes environments by either running the OneAgent Log Module or integrating with log collectors such as Fluent Bit, OpenTelemetry Collector, Logstash, or Fluentd.
 
