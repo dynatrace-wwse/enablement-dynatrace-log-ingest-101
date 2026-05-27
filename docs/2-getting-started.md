@@ -1,4 +1,3 @@
---8<-- "snippets/send-bizevent/2-getting-started.js"
 --8<-- "snippets/requirements.md"
 
 ## Prerequisites

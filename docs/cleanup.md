@@ -1,4 +1,3 @@
---8<-- "snippets/send-bizevent/cleanup.js"
 
 --8<-- "snippets/feedback.md"
 
