@@ -89,6 +89,33 @@ k8s.namespace.name = cronjobs
 ```
 ![CronJob Logs](./img/configure-dynatrace_logs_query_new_cronjob_logs.png)
 
+<!-- LAB_QUESTION
+type: dql-verification
+question: "Verify CronJob logs are now being ingested from the cronjobs namespace"
+buttonText: "Check CronJob Logs"
+dql: |
+  fetch logs
+  | filter k8s.namespace.name == "cronjobs"
+  | filter timestamp > now() - 15m
+  | limit 1
+expect:
+  operator: not-empty
+hint: "Two things are required: the `CronJob Logs` ingest rule AND the `Collect all container logs` Log module feature flag. The CronJobs run every few minutes — wait for the next execution and try again."
+explanation: "CronJob logs are flowing — the ingest rule plus the 'Collect all container logs' feature flag captured the stdout logs that autodiscovery skips."
+-->
+
+<!-- LAB_QUESTION
+type: multiple-choice
+question: "The ingest rule alone did not capture the CronJob logs. What did enabling 'Collect all container logs' change?"
+options:
+  - "It lets the Log Module collect container stdout logs that don't meet the normal autodiscovery requirements"
+  - "It increases the log retention period for the cronjobs namespace"
+  - "It grants the Data Ingest token permission to write logs"
+  - "It deploys a second Log Module dedicated to CronJobs"
+correct: 0
+explanation: "The CronJob containers only echo to stdout, which does not satisfy autodiscovery. 'Collect all container logs' tells the Log Module to capture all container logs regardless of autodiscovery."
+-->
+
 ## Configure Sensitive Data Masking
 
 Specific log messages may include user names, email addresses, URL parameters, and other information that you may not want to disclose. Log Monitoring features the ability to mask any information by modifying the configuration file on each OneAgent that handles information you consider to be sensitive.
@@ -156,6 +183,23 @@ k8s.namespace.name = cronjobs k8s.workload.name = log-message-cronjob content = 
 ![Email Masked](./img/configure-dynatrace_logs_query_email_logs.png)
 
 The logs now contain the hashed value of the email address, `03cb5558c834be3796387a17763f315f22d3ab87cd1dc6d5d4817f8d27ec5913`.
+
+<!-- LAB_QUESTION
+type: dql-verification
+question: "Verify the email address in the CronJob logs is masked (SHA-256 hash present, raw email gone)"
+buttonText: "Check Masking"
+dql: |
+  fetch logs
+  | filter k8s.namespace.name == "cronjobs"
+  | filter k8s.workload.name == "log-message-cronjob"
+  | filter contains(content, "03cb5558c834be3796387a17763f315f22d3ab87cd1dc6d5d4817f8d27ec5913")
+  | filter timestamp > now() - 20m
+  | limit 1
+expect:
+  operator: not-empty
+hint: "The masking rule applies to NEW logs only. The log-message-cronjob runs every few minutes — wait for the next run, then check. If you see the raw email instead of the hash, re-check the search expression and SHA-256 masking type on your rule."
+explanation: "The email is masked at the source — Dynatrace stores the SHA-256 hash, never the raw address. Identical emails produce the same hash, so you can still group on them."
+-->
 
 ## Configure Timestamp/Splitting Patterns
 
@@ -285,6 +329,18 @@ k8s.namespace.name = cronjobs  k8s.workload.name = "timestamp-cronjob" k8s.conta
 
 Each log message is now treated as a single, multi-line, log record containing the entire message.
 
+<!-- LAB_QUESTION
+type: multiple-choice
+question: "How does Dynatrace decide where one log entry ends and the next begins?"
+options:
+  - "A line with a detected timestamp starts a new entry; following lines without a timestamp are merged into it"
+  - "Every newline character always starts a new log entry"
+  - "Entries are split every 40 characters, set by the timestamp search limit"
+  - "Dynatrace splits entries only when it detects valid JSON"
+correct: 0
+explanation: "Timestamp detection defines log boundaries: a detected timestamp begins a new entry and subsequent timestamp-less lines are merged in. The timestamp pattern rule (plus 'Skip indented lines') stops mid-record timestamps from wrongly splitting a multi-line record."
+-->
+
 ## Ingest Dynatrace Logs
 
 In some cases, you may want to collect container logs from the Dynatrace components running in the `dynatrace` namespace.  By default, collection of these logs is disabled, even if you have a log ingest rule configured to do so.  Logs collected from the Dynatrace components are treated like any other log that you ingest - it consumes licensing, storage, etc.
@@ -315,6 +371,21 @@ k8s.namespace.name = dynatrace
 ```
 
 ![Dynatrace Logs](./img/configure-dynatrace_logs_query_dynatrace_logs.png)
+
+<!-- LAB_QUESTION
+type: dql-verification
+question: "Verify Dynatrace component logs from the dynatrace namespace are being ingested"
+buttonText: "Check Dynatrace Logs"
+dql: |
+  fetch logs
+  | filter k8s.namespace.name == "dynatrace"
+  | filter timestamp > now() - 15m
+  | limit 1
+expect:
+  operator: not-empty
+hint: "Two steps are required: enable 'Allow OneAgent to monitor Dynatrace logs' AND add the `dynatrace` namespace to your ingest rule matcher. Save both, then wait a couple of minutes."
+explanation: "Dynatrace self-monitoring logs are flowing — useful for troubleshooting the observability stack itself (remember: if the Log Module is down, these stop too)."
+-->
 
 !!! tip "Troubleshooting Observability issues with Dynatrace" 
     These logs can help with troubleshooting any observability issues on the Kubernetes cluster.  However, it is the Log Module that is collecting these logs, so if the Log Module is not working - the logs won't be shipped to Dynatrace!
@@ -747,6 +818,48 @@ k8s.namespace.name = "astroshop" k8s.container.name = "payment"
 
 ![PaymentService Logs](./img/configure-dynatrace_opp_query_new_logs.png)
 
+<!-- LAB_QUESTION
+type: dql-verification
+question: "Verify OpenPipeline extracted the payment fields from the payment service logs"
+buttonText: "Check Parsed Fields"
+dql: |
+  fetch logs
+  | filter k8s.namespace.name == "astroshop" and k8s.container.name == "payment"
+  | filter isNotNull(payment.amount) and isNotNull(payment.transactionid)
+  | filter timestamp > now() - 15m
+  | limit 1
+expect:
+  operator: not-empty
+hint: "This requires the pipeline processors AND a Dynamic Route sending astroshop/payment logs to the `AstroShop PaymentService` pipeline. Confirm the route is enabled, then wait 3-5 minutes for new payment logs."
+explanation: "The pipeline parsed the JSON content and extracted clean payment.* fields — the 'Transaction Fields' processor and dynamic route are working."
+-->
+
+<!-- LAB_QUESTION
+type: dql-verification
+question: "Verify the OpenPipeline Business Event rule is generating payment bizevents"
+buttonText: "Check BizEvents"
+dql: |
+  fetch bizevents
+  | filter event.type == "astroshop.paymentservice.transaction.complete"
+  | filter timestamp > now() - 15m
+  | limit 1
+expect:
+  operator: not-empty
+hint: "The bizevent comes from the Data extraction → Business Event rule. It only fires on successful 'Transaction complete.' logs, which need the parsed payment fields first. Allow a few minutes for transactions to occur."
+explanation: "Business events are being generated from logs at ingest — these bizevents can now drive business analytics and dashboards, no raw log queries needed."
+-->
+
+<!-- LAB_QUESTION
+type: multiple-choice
+question: "Several processors matched on `process.technology = Node.js` or the parsed JSON content. What is the role of the NodeJS technology bundle processor in this pipeline?"
+options:
+  - "It applies built-in parsing for known NodeJS log frameworks, e.g. turning the numeric raw level into a readable loglevel like INFO/WARN/ERROR"
+  - "It restarts the Node.js payment pods so they emit structured logs"
+  - "It routes Node.js logs to a dedicated storage bucket"
+  - "It installs the OpenTelemetry SDK into the payment service"
+correct: 0
+explanation: "The Technology Bundle: NodeJS processor applies built-in pattern detection for known NodeJS frameworks, which (among other things) extracts a usable loglevel — later processors and the Davis event rule depend on that loglevel/status value."
+-->
 
 ## Continue
 

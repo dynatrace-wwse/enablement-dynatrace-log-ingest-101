@@ -12,6 +12,23 @@ Locate the flag **paymentFailure**.  Click the drop down box and change it from 
 
 ![Flagd Configurator](./img/analyze-logs_enable_feature_flag.png)
 
+Once the flag is on, the payment service starts throwing errors. Confirm the failing payment logs are reaching Dynatrace before you investigate them.
+
+<!-- LAB_QUESTION
+type: dql-verification
+question: "Verify the payment service is now producing ERROR logs after enabling the paymentFailure flag"
+buttonText: "Check Payment Errors"
+dql: |
+  fetch logs
+  | filter k8s.namespace.name == "astroshop" and k8s.container.name == "payment"
+  | filter status == "ERROR"
+  | filter timestamp > now() - 15m
+  | limit 1
+expect:
+  operator: not-empty
+hint: "Set the `paymentFailure` flag to a non-zero percentage (e.g. 50%) in the AstroShop /feature UI and click save. It takes ~1 minute to take effect, then a few minutes for failing transactions and their logs to flow in."
+explanation: "Failing payment logs are arriving with status ERROR — this is the signal the OpenPipeline Davis event rule uses to raise a problem."
+-->
 
 ## Analyze Logs in Context
 
@@ -110,6 +127,27 @@ The `Services` app opens with the `PaymentService` selected.  Here you can view 
 
 
 Having logs, together and in context with metrics and traces, is essential to having a unified observability strategy.  Logs, metrics, and traces together is nice to have, but correlating them together and in context with application and infrastructure topology greatly speeds up troubleshooting.  Logs in context allow you to make better real-time business decisions by understanding business outcomes correlated with underlying system health.
+
+## Knowledge check
+
+<!-- LAB_QUESTION
+type: multiple-choice
+question: "When you opened the Problem, Dynatrace showed the relevant logs and let you pivot to the trace and service without manual searching. What made that 'logs in context' experience possible?"
+options:
+  - "Log enrichment tied each log record to its span, trace, and Kubernetes entity, so Dynatrace can correlate logs, traces, and topology automatically"
+  - "You manually wrote a DQL query joining logs to traces by timestamp"
+  - "The Log Module embeds the full trace waterfall inside every log line"
+  - "Problems can only ever show logs from the dynatrace namespace"
+correct: 0
+explanation: "Because you enabled Log Enrichment earlier, each log carries trace/span/entity context. Dynatrace uses that to surface root-cause-relevant logs on the problem and to pivot seamlessly to the distributed trace and the service."
+-->
+
+Complete the assessment below to validate what you learned in this lab.
+
+<!-- boundScenarioId: logs-101-fundamentals retake=false -->
+
+!!! success "Training complete!"
+    You deployed the Dynatrace Log Module, configured log ingest rules, masked sensitive data, split multi-line records, shaped logs with OpenPipeline, and analyzed a failure end to end across Problems, Kubernetes, Traces, and Services. 🎉
 
 ## Continue
 

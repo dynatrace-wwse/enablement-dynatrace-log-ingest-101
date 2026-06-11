@@ -28,6 +28,23 @@ Navigate to the `Settings` app in the Dynatrace tenant.   Click on `Collect and 
 
 ![Log Enrichment OneAgent Features](./img/getting-started_dynatrace_oneagent_features_enrichment.png)
 
+## Knowledge check
+
+<!-- LAB_QUESTION
+type: multiple-choice
+question: "Why do we enable the Log Enrichment OneAgent features in this lab?"
+options:
+  - "So Dynatrace can correlate log records with the traces, spans, and Kubernetes entities that produced them"
+  - "So OneAgent compresses logs before sending them, reducing ingest cost"
+  - "So logs are encrypted at rest in Grail"
+  - "So the Log Module can run without the Dynatrace Operator"
+correct: 0
+explanation: "Log enrichment adds metadata that lets Dynatrace recognize, correlate, and evaluate logs — enabling you to switch context between a log record and the span, transaction, or workload that produced it."
+-->
+
+!!! info "These settings are prerequisites"
+    Both OneAgent feature groups (OpenTelemetry and Log Enrichment) must be enabled **before** you deploy Dynatrace in the next sections, otherwise the enrichment context will be missing from the logs you ingest.
+
 ## Continue
 
 In the next section, we'll launch our Codespaces instance.

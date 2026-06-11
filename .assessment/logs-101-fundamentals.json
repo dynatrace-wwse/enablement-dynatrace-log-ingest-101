@@ -1,0 +1,266 @@
+{
+  "templateVersion": "1.0.0",
+  "id": "logs-101-fundamentals",
+  "category": "CO",
+  "title": "Log Ingest 101 — Fundamentals",
+  "description": "Validate your understanding of Kubernetes log ingestion with Dynatrace as covered in this lab: the Log Module, log ingest rules, autodiscovery, sensitive data masking, timestamp splitting, and OpenPipeline processing.",
+  "difficulty": "beginner",
+  "estimatedTime": 8,
+  "imagine": "You just finished the Log Ingest 101 enablement. Dynatrace is running on a k3d cluster collecting logs from the AstroShop app and CronJobs, with OpenPipeline shaping the payment service logs. You want to confirm you understood how the pieces fit together.",
+  "yourGoal": "Answer six questions about how Dynatrace ingests, processes, and analyzes Kubernetes logs as it applied to this lab.",
+  "tools": [
+    { "label": "Dynatrace Operator" },
+    { "label": "Log Module" },
+    { "label": "Log ingest rules" },
+    { "label": "OpenPipeline" }
+  ],
+  "story": {
+    "introduction": "The lab deployed the Dynatrace Operator and Log Module on a k3d cluster, configured log ingestion for the astroshop and cronjobs namespaces, and built an OpenPipeline pipeline for the payment service. These questions reinforce what each component does.",
+    "context": "Everything you need to answer can be found in the lab pages you just completed."
+  },
+  "questions": [
+    {
+      "id": "q1-log-module",
+      "type": "multiple-choice",
+      "title": "What collects container logs on each node?",
+      "content": "In this lab you enabled `Log Management and Analytics` with the option `Fully managed with Dynatrace Log Module`. Which component actually collects the container logs from each Kubernetes node?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The Dynatrace Log Module, deployed and managed by the Dynatrace Operator as a pod on each node",
+          "isCorrect": true,
+          "explanation": "Correct! The Operator deploys the Log Module (a logmonitoring pod, part of a DaemonSet) on each node to read container logs."
+        },
+        {
+          "id": "b",
+          "text": "The Dynatrace web UI, by polling the Kubernetes API for pod logs",
+          "isCorrect": false,
+          "explanation": "Log collection happens in-cluster on each node, not by the web UI polling the API."
+        },
+        {
+          "id": "c",
+          "text": "A Fluent Bit sidecar that Dynatrace injects into every application pod",
+          "isCorrect": false,
+          "explanation": "Dynatrace can integrate with Fluent Bit, but in this lab the OneAgent Log Module collects the logs — no sidecar is injected."
+        },
+        {
+          "id": "d",
+          "text": "kubectl logs, scheduled as a CronJob by the Operator",
+          "isCorrect": false,
+          "explanation": "The Log Module reads container log files directly on the node; it does not shell out to kubectl logs."
+        }
+      ],
+      "correctAnswer": "a",
+      "explanation": "The Dynatrace Operator manages the Log Module, which runs as a logmonitoring pod on each node and reads container logs from the node filesystem.",
+      "points": 1000,
+      "hints": [
+        "Look at the pods in the `dynatrace` namespace — one of them has `logmonitoring` in its name.",
+        "The Operator is the manager; it deploys the component that does the actual collection."
+      ]
+    },
+    {
+      "id": "q2-ingest-rule-scope",
+      "type": "multiple-choice",
+      "title": "Where is log ingest controlled?",
+      "content": "Your `dynakube.yaml` had an `ingestRuleMatchers` block restricting ingest to the `astroshop` namespace. After deployment, where do you manage which logs are ingested going forward?",
+      "options": [
+        {
+          "id": "a",
+          "text": "In the Dynatrace tenant Log ingest rules settings — the Dynakube only seeds an initial cluster-scoped rule",
+          "isCorrect": true,
+          "explanation": "Correct! The Dynakube seeds the first rule on creation, but ongoing ingest is controlled by Log ingest rules in the tenant settings."
+        },
+        {
+          "id": "b",
+          "text": "Only by editing the dynakube.yaml and re-applying it with kubectl",
+          "isCorrect": false,
+          "explanation": "Changes to the Dynakube after creation do not update the tenant ingest rule. Manage it in the tenant."
+        },
+        {
+          "id": "c",
+          "text": "In the Log Module container's local config file on each node",
+          "isCorrect": false,
+          "explanation": "Log ingest for the Log Module is controlled remotely by the Dynatrace tenant, not by local files."
+        },
+        {
+          "id": "d",
+          "text": "Log ingest cannot be filtered — Dynatrace always ingests every container log",
+          "isCorrect": false,
+          "explanation": "Ingest is rule-based; you scope it by namespace, content, log level, annotations, and more."
+        }
+      ],
+      "correctAnswer": "a",
+      "explanation": "The Dynakube `ingestRuleMatchers` is a quality-of-life seed used at deployment. Ongoing log ingest is governed by Log ingest rules in the Dynatrace tenant, which can be scoped at environment, host group, cluster, and host levels.",
+      "points": 1000,
+      "hints": [
+        "Re-read the tip: 'Log ingest for the Log Module is controlled by the Dynatrace tenant, not the local Dynakube configuration.'",
+        "Rules can be set at four scopes: host, Kubernetes cluster, host group, and environment."
+      ]
+    },
+    {
+      "id": "q3-autodiscovery",
+      "type": "multiple-choice",
+      "title": "Why didn't the CronJob logs appear automatically?",
+      "content": "You added a log ingest rule for the `cronjobs` namespace, but logs still did not appear until you changed one more setting. The CronJob containers simply `echo` a message to stdout. Why were they not autodiscovered, and what fixed it?",
+      "options": [
+        {
+          "id": "a",
+          "text": "stdout echo logs don't meet the autodiscovery requirements; enabling the `Collect all container logs` feature flag captured them",
+          "isCorrect": true,
+          "explanation": "Correct! Plain stdout messages don't satisfy autodiscovery, so the `Collect all container logs` Log module feature flag is required."
+        },
+        {
+          "id": "b",
+          "text": "The CronJobs were in the wrong namespace and had to be redeployed",
+          "isCorrect": false,
+          "explanation": "The namespace was correct; the issue was that stdout logs are not autodiscovered by default."
+        },
+        {
+          "id": "c",
+          "text": "The Data Ingest token had expired and needed to be regenerated",
+          "isCorrect": false,
+          "explanation": "Token expiry would block all ingest, not just the CronJob stdout logs."
+        },
+        {
+          "id": "d",
+          "text": "CronJobs must be converted to Deployments before their logs can be ingested",
+          "isCorrect": false,
+          "explanation": "Workload kind is not the blocker — the autodiscovery requirements and the feature flag are."
+        }
+      ],
+      "correctAnswer": "a",
+      "explanation": "A log file must meet all autodiscovery requirements to be picked up automatically. Containers that only echo to stdout don't qualify, so you enable the `Collect all container logs` Log module feature flag to capture them.",
+      "points": 1000,
+      "hints": [
+        "Think about the difference between a real log file and a container echoing to stdout.",
+        "The fix was a Log module feature flag, not a new ingest rule."
+      ]
+    },
+    {
+      "id": "q4-masking",
+      "type": "multiple-choice",
+      "title": "Where does sensitive data masking happen?",
+      "content": "You created a SHA-256 masking rule for the email address in the CronJob logs. At what point is the email value masked?",
+      "options": [
+        {
+          "id": "a",
+          "text": "On the OneAgent / Log Module, before the data is ingested — the raw value never reaches Dynatrace storage",
+          "isCorrect": true,
+          "explanation": "Correct! Masking is performed on the agent at the source, so the unmasked value is never stored in Dynatrace."
+        },
+        {
+          "id": "b",
+          "text": "In the Dynatrace UI, only when a user without permission views the log",
+          "isCorrect": false,
+          "explanation": "That would mean the raw value is stored. Masking happens before ingest, so the raw value is never persisted."
+        },
+        {
+          "id": "c",
+          "text": "In Grail at query time, applied by the DQL engine",
+          "isCorrect": false,
+          "explanation": "OneAgent masking is applied at the source before storage, not at query time."
+        },
+        {
+          "id": "d",
+          "text": "By a CronJob that periodically rewrites stored log records",
+          "isCorrect": false,
+          "explanation": "There is no post-processing rewrite; masking is done up front on the agent."
+        }
+      ],
+      "correctAnswer": "a",
+      "explanation": "Sensitive data masking is performed directly on OneAgent / the Log Module, ensuring sensitive data is never ingested into the system. SHA-256 produces a stable hash so identical values still match each other.",
+      "points": 800,
+      "hints": [
+        "Re-read: 'Masking is performed directly on OneAgent, ensuring that sensitive data are never ingested.'",
+        "If the raw value never reaches storage, where must the masking occur?"
+      ]
+    },
+    {
+      "id": "q5-openpipeline-bizevent",
+      "type": "multiple-choice",
+      "title": "What does the OpenPipeline Business Event rule produce?",
+      "content": "In the AstroShop PaymentService pipeline you added a Data extraction rule of type `Business Event` matching `Transaction complete.`. What does this rule generate?",
+      "options": [
+        {
+          "id": "a",
+          "text": "A bizevent (`astroshop.paymentservice.transaction.complete`) on each successful payment, usable for business analytics",
+          "isCorrect": true,
+          "explanation": "Correct! The Data extraction Business Event rule emits a bizevent per matching log record for business observability use cases."
+        },
+        {
+          "id": "b",
+          "text": "A new log bucket with extended retention for payment logs",
+          "isCorrect": false,
+          "explanation": "That would be a storage processor. The Business Event rule emits bizevents."
+        },
+        {
+          "id": "c",
+          "text": "A Davis problem every time a payment completes",
+          "isCorrect": false,
+          "explanation": "Davis events come from the Davis event processor and are meant for failures/alerts, not successful transactions."
+        },
+        {
+          "id": "d",
+          "text": "A masked copy of the credit card number",
+          "isCorrect": false,
+          "explanation": "Masking the card number was a separate DQL processor in the Processing tab, not the Business Event rule."
+        }
+      ],
+      "correctAnswer": "a",
+      "explanation": "OpenPipeline Data extraction with a Business Event rule turns matching log records into bizevents (here `astroshop.paymentservice.transaction.complete`), which you can then use for business analytics and observability.",
+      "points": 800,
+      "hints": [
+        "The rule lived under the `Data extraction` tab and had type `Business Event`.",
+        "The event type string was `astroshop.paymentservice.transaction.complete`."
+      ]
+    },
+    {
+      "id": "q6-dynamic-route",
+      "type": "multiple-choice",
+      "title": "What makes an OpenPipeline pipeline take effect?",
+      "content": "After building the `AstroShop PaymentService` pipeline, the logs were still not being processed by it until you did one more thing. What activates a pipeline for a given set of logs?",
+      "options": [
+        {
+          "id": "a",
+          "text": "A Dynamic Route with a matching condition that routes the matching logs to the pipeline",
+          "isCorrect": true,
+          "explanation": "Correct! A pipeline has no effect until a dynamic route (matching condition) sends data to it."
+        },
+        {
+          "id": "b",
+          "text": "Restarting the Log Module pods so they pick up the new pipeline",
+          "isCorrect": false,
+          "explanation": "Pipelines are tenant-side; no pod restart is needed. You need a dynamic route."
+        },
+        {
+          "id": "c",
+          "text": "Adding the pipeline name to the dynakube.yaml and re-applying it",
+          "isCorrect": false,
+          "explanation": "Pipelines and routing are configured in the tenant, not in the Dynakube."
+        },
+        {
+          "id": "d",
+          "text": "Pipelines apply automatically to all logs as soon as they are saved",
+          "isCorrect": false,
+          "explanation": "Without a matching dynamic route, a saved pipeline processes nothing."
+        }
+      ],
+      "correctAnswer": "a",
+      "explanation": "A pipeline only processes data that a Dynamic Route sends to it. The route's matching condition (a DQL expression, here matching the astroshop namespace and payment container) selects which records flow through the pipeline.",
+      "points": 800,
+      "hints": [
+        "Re-read: 'A pipeline will not have any effect unless logs are configured to be routed to the pipeline.'",
+        "The matching condition was a DQL query on `k8s.namespace.name` and `k8s.container.name`."
+      ]
+    }
+  ],
+  "maxScore": 5400,
+  "tags": ["logs", "log-ingestion", "kubernetes", "openpipeline", "dynatrace", "log-module"],
+  "learningObjectives": [
+    "Explain how the Dynatrace Operator and Log Module collect Kubernetes container logs",
+    "Describe where log ingest rules are managed and how their scopes work",
+    "Explain why stdout-only logs need the 'Collect all container logs' feature flag",
+    "State where sensitive data masking is applied and why",
+    "Describe what OpenPipeline Business Event extraction and Dynamic Routing do"
+  ]
+}
