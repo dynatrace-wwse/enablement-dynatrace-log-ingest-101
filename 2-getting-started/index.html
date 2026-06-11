@@ -360,6 +360,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#knowledge-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Knowledge check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#continue" class="md-nav__link">
     <span class="md-ellipsis">
       Continue
@@ -534,6 +543,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#knowledge-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Knowledge check
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#continue" class="md-nav__link">
     <span class="md-ellipsis">
       Continue
@@ -595,6 +613,23 @@
 <p>Technically you only need to enable Log Enrichment for <strong>Node.js</strong> for this lab.  However, we recommend enabling this capability for all technologies to get the most value out of your log data.</p>
 </div>
 <p><img alt="Log Enrichment OneAgent Features" src="../img/getting-started_dynatrace_oneagent_features_enrichment.png" /></p>
+<h2 id="knowledge-check">Knowledge check<a class="headerlink" href="#knowledge-check" title="Permanent link">#</a></h2>
+<!-- LAB_QUESTION
+type: multiple-choice
+question: "Why do we enable the Log Enrichment OneAgent features in this lab?"
+options:
+  - "So Dynatrace can correlate log records with the traces, spans, and Kubernetes entities that produced them"
+  - "So OneAgent compresses logs before sending them, reducing ingest cost"
+  - "So logs are encrypted at rest in Grail"
+  - "So the Log Module can run without the Dynatrace Operator"
+correct: 0
+explanation: "Log enrichment adds metadata that lets Dynatrace recognize, correlate, and evaluate logs — enabling you to switch context between a log record and the span, transaction, or workload that produced it."
+-->
+
+<div class="admonition info">
+<p class="admonition-title">These settings are prerequisites</p>
+<p>Both OneAgent feature groups (OpenTelemetry and Log Enrichment) must be enabled <strong>before</strong> you deploy Dynatrace in the next sections, otherwise the enrichment context will be missing from the logs you ingest.</p>
+</div>
 <h2 id="continue">Continue<a class="headerlink" href="#continue" title="Permanent link">#</a></h2>
 <p>In the next section, we'll launch our Codespaces instance.</p>
 <div class="grid cards">

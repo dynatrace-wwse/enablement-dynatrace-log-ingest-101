@@ -380,6 +380,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#validate-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate your environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tips-tricks" class="md-nav__link">
     <span class="md-ellipsis">
       Tips &amp; Tricks
@@ -618,6 +627,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#validate-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate your environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tips-tricks" class="md-nav__link">
     <span class="md-ellipsis">
       Tips &amp; Tricks
@@ -782,6 +800,48 @@
 <p>After a couple of minutes, you'll see this screen in your Codespaces terminal. It contains the links to the UI of the application which we will be using for our hands-on training.</p>
 <p>Sample output:
 <img alt="Codespaces finish" src="../img/codespaces_finish.png" /></p>
+<h2 id="validate-your-environment">Validate your environment<a class="headerlink" href="#validate-your-environment" title="Permanent link">#</a></h2>
+<p>Before deploying Dynatrace, confirm the cluster and the sample workloads are up. Open the <strong>Terminal</strong> tab and run the checks below — all three must pass before you continue.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>astroshop
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>cronjobs
+</span></code></pre></div>
+<!-- LAB_QUESTION
+type: shell-verification
+question: "Verify the k3d cluster node is Ready"
+buttonText: "Check Cluster"
+command: "kubectl get nodes --no-headers 2>/dev/null | grep -c ' Ready'"
+expect:
+  operator: gt
+  value: 0
+hint: "The Codespace takes 7-10 minutes to be fully operational. Wait, then run `kubectl get nodes` in the Terminal tab and try again."
+explanation: "The cluster node is Ready — your local Kubernetes is up."
+-->
+
+<!-- LAB_QUESTION
+type: shell-verification
+question: "Verify the AstroShop application pods are Running"
+buttonText: "Check AstroShop"
+command: "kubectl get pods -n astroshop --no-headers 2>/dev/null | grep -c Running"
+expect:
+  operator: gt
+  value: 0
+hint: "AstroShop is deployed automatically. If no pods are Running, recycle them with `kubectl delete pods --all -n astroshop` and wait a minute."
+explanation: "AstroShop pods are Running — the demo application is ready to be monitored."
+-->
+
+<!-- LAB_QUESTION
+type: shell-verification
+question: "Verify the CronJobs namespace exists (it generates the sample log data)"
+buttonText: "Check CronJobs"
+command: "kubectl get namespace cronjobs --no-headers 2>/dev/null | grep -c cronjobs"
+expect:
+  operator: gt
+  value: 0
+hint: "If the namespace is missing, run `deployCronJobs` in the Terminal tab to (re)deploy the CronJob manifests."
+explanation: "The cronjobs namespace exists — the sample CronJobs that produce log data are deployed."
+-->
+
 <h2 id="tips-tricks">Tips &amp; Tricks<a class="headerlink" href="#tips-tricks" title="Permanent link">#</a></h2>
 <p>We want to boost your learning and try to make your experience as smooth as possible with Dynatrace trainings. Your Codespaces have a couple of convenience features added. </p>
 <h3 id="show-the-greeting">Show the greeting<a class="headerlink" href="#show-the-greeting" title="Permanent link">#</a></h3>
@@ -796,28 +856,28 @@
 <h3 id="astroshop">AstroShop<a class="headerlink" href="#astroshop" title="Permanent link">#</a></h3>
 <p>If you encounter problems with the AstroShop app deployed in the <code>astroshop</code> namespace, you can easily recycle the pods.</p>
 <p>Recycle pods:
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pods<span class="w"> </span>--all<span class="w"> </span>-n<span class="w"> </span>astroshop
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>pods<span class="w"> </span>--all<span class="w"> </span>-n<span class="w"> </span>astroshop
 </span></code></pre></div></p>
 <p>But before doing so, if you want to see what is happening we recommend the following: </p>
 <p>Verify all astroshop pods
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>astroshop
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>astroshop
 </span></code></pre></div></p>
 <p>Check for events in the astroshop namespace
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>astroshop
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>astroshop
 </span></code></pre></div></p>
 <p>Check for system and cluster events 
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>kube-system
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>default
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>kube-system
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>events<span class="w"> </span>-n<span class="w"> </span>default
 </span></code></pre></div></p>
 <h3 id="app-exposure">App exposure<a class="headerlink" href="#app-exposure" title="Permanent link">#</a></h3>
 <p>The Astroshop application is accessible via the nginx ingress controller. The URL is shown in the greeting — run <code>printGreeting</code> to display it.</p>
 <p>Verify service:
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>astroshop-frontendproxy<span class="w"> </span>-n<span class="w"> </span>astroshop
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>astroshop-frontendproxy<span class="w"> </span>-n<span class="w"> </span>astroshop
 </span></code></pre></div></p>
 <h3 id="cronjobs">CronJobs<a class="headerlink" href="#cronjobs" title="Permanent link">#</a></h3>
 <p>If you encounter problems with the CronJobs deployed in the <code>cronjobs</code> namespace, reapply the manifests.</p>
 <p>Deploy cronjobs:
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>deployCronJobs
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>deployCronJobs
 </span></code></pre></div></p>
 <h2 id="continue">Continue<a class="headerlink" href="#continue" title="Permanent link">#</a></h2>
 <p>In the next section, we'll deploy Dynatrace on our Kubernetes cluster to start collecting logs (and more!).</p>

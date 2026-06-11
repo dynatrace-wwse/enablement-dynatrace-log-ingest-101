@@ -715,6 +715,18 @@ Toggle the <code>Telemetry endpoints for data ingest</code> flag/setting to <cod
 <p>Validate the new Dynatrace pods are running:
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>dynatrace
 </span></code></pre></div></p>
+<!-- LAB_QUESTION
+type: shell-verification
+question: "Verify the Dynatrace Operator pods are Running in the dynatrace namespace"
+buttonText: "Check Operator"
+command: "kubectl get pods -n dynatrace --no-headers 2>/dev/null | grep -c Running"
+expect:
+  operator: gt
+  value: 0
+hint: "Run the `helm install dynatrace-operator` command from your tenant in the Terminal tab, then wait ~1 minute for the operator and webhook pods to start."
+explanation: "The Dynatrace Operator is Running — it can now manage the DynaKube and Log Module components."
+-->
+
 <h3 id="deploy-dynakube">Deploy Dynakube<a class="headerlink" href="#deploy-dynakube" title="Permanent link">#</a></h3>
 <p>Locate the <code>dynakube.yaml</code> file that you downloaded from your tenant.  With the file (directory) open, navigate back to your GitHub Codespaces instance.  Click and hold to drag and drop the <code>dynakube.yaml</code> file into your Codespaces instance.</p>
 <p><img alt="Copy Dynakube" src="../img/deploy-dynatrace_copy_dynakube.gif" /></p>
@@ -828,6 +840,30 @@ Toggle the <code>Telemetry endpoints for data ingest</code> flag/setting to <cod
 </tr>
 </tbody>
 </table>
+<!-- LAB_QUESTION
+type: shell-verification
+question: "Verify the two DynaKube objects were created in the dynatrace namespace"
+buttonText: "Check DynaKube"
+command: "kubectl get dynakube -n dynatrace --no-headers 2>/dev/null | grep -c ''"
+expect:
+  operator: gte
+  value: 2
+hint: "Run `kubectl apply -f dynakube.yaml` in the Terminal tab. The lab uses two DynaKubes: one for Kubernetes monitoring + Log Management, one for the agents (Application Observability)."
+explanation: "Both DynaKube objects exist — the Operator is reconciling Kubernetes monitoring, Application Observability, and the Log Module."
+-->
+
+<!-- LAB_QUESTION
+type: shell-verification
+question: "Verify the Dynatrace Log Module pod is Running"
+buttonText: "Check Log Module"
+command: "kubectl get pods -n dynatrace --no-headers 2>/dev/null | grep logmonitoring | grep -c Running"
+expect:
+  operator: gt
+  value: 0
+hint: "The Log Module (logmonitoring pod) is deployed by the Operator once the DynaKube is applied. Wait 3-5 minutes after applying the DynaKube and try again."
+explanation: "The Log Module is Running — it is now collecting container logs from the node and shipping the ones that match your ingest rules."
+-->
+
 <h3 id="dynakubes-kubernetes-monitoring-and-application-observability-log-management">Dynakubes Kubernetes Monitoring and Application Observability + Log Management<a class="headerlink" href="#dynakubes-kubernetes-monitoring-and-application-observability-log-management" title="Permanent link">#</a></h3>
 <p>By default Dynatrace splits the ActiveGate responsibilities into two groups is recommended: One group handling everything related to Kubernetes platform monitoring, including KSPM, and the other managing Agent traffic routing, telemetry ingest, and extensions. This separation provides several advantages, to learn more about the advantages <a href="https://docs.dynatrace.com/docs/ingest-from/setup-on-k8s/guides/deployment-and-configuration/resource-management/ag-resource-limits#using-a-dedicated-activegate-for-kubernetes-platform-monitoring">please read here</a></p>
 <p>Enabling <strong>Log Management and Analytics</strong> with the option <code>Fully managed with Dynatrace Log Module</code> will add the Log Module to the Dynakube spec.</p>
@@ -935,6 +971,43 @@ Toggle the <code>Telemetry endpoints for data ingest</code> flag/setting to <cod
 <p><img alt="Namespace Logs" src="../img/deploy-dynatrace_k8s_namespace_logs.png" /></p>
 <p>Validate log data after running the query.</p>
 <p><img alt="Namespace Logs Query" src="../img/deploy-dynatrace_k8s_namespace_query_logs.png" /></p>
+<p>You can also run this DQL directly in the <strong>Logs</strong> or <strong>Notebooks</strong> app to confirm ingest:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>fetch logs
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>| filter k8s.namespace.name == &quot;astroshop&quot;
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>| filter timestamp &gt; now() - 10m
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>| limit 5
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Time filter</p>
+<p>The <code>filter timestamp &gt; now() - 10m</code> clause shows only logs from <strong>your</strong> session in the last 10 minutes, avoiding false positives from earlier runs.</p>
+</div>
+<!-- LAB_QUESTION
+type: dql-verification
+question: "Verify Dynatrace is ingesting logs from the astroshop namespace"
+buttonText: "Check AstroShop Logs"
+dql: |
+  fetch logs
+  | filter k8s.namespace.name == "astroshop"
+  | filter timestamp > now() - 10m
+  | limit 1
+expect:
+  operator: not-empty
+hint: "Make sure the Log Module pod is Running and your tenant ingest rule allows the astroshop namespace. After refreshing the application pods, wait 2-3 minutes for logs to flow."
+explanation: "Logs are being ingested from astroshop — the Log Module, ingest rule, and tenant connection are all working end to end."
+-->
+
+<!-- LAB_QUESTION
+type: multiple-choice
+question: "The agents DynaKube uses `oneAgent.applicationMonitoring: {}`. Why did you have to delete/recycle the astroshop pods after deploying Dynatrace?"
+options:
+  - "Application Observability injects code modules at pod startup, so pods that were already running before deployment must restart to be instrumented"
+  - "Deleting the pods frees memory so the Log Module has room to start"
+  - "The pods must be deleted to regenerate the Data Ingest token"
+  - "Recycling the pods is what creates the dynatrace namespace"
+correct: 0
+explanation: "With applicationMonitoring, the Dynatrace webhook injects code modules when a pod starts. Pods running before Dynatrace was deployed never went through injection, so recycling them triggers instrumentation."
+-->
+
 <h2 id="continue">Continue<a class="headerlink" href="#continue" title="Permanent link">#</a></h2>
 <p>In the next section, we'll configure Log Monitoring in Dynatrace.</p>
 <div class="grid cards">
