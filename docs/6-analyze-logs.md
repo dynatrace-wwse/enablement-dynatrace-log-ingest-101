@@ -6,7 +6,7 @@ The `astroshop` demo provides several feature flags that you can use to simulate
 
 Flag values can be changed through the feature flag UI — open the Astroshop URL from the greeting (`printGreeting`) and append `/feature`. Changing the values through this user interface will be reflected in the flagd service.
 
-Navigate to the feature flag UI by adding `/feature` to the end of your app URL. In GitHub Codespaces, the URL will look similar to `https://your-codespace-name-80.app.github.dev/feature`.
+Navigate to the feature flag UI by adding `/feature` to the end of your AstroShop app URL.
 
 Locate the flag **paymentFailure**.  Click the drop down box and change it from `off` to a percentage, in this case we are choosing `50%`.  Click `save` at the top of the page.  The feature flag should start working within a minute.
 
@@ -149,10 +149,4 @@ Complete the assessment below to validate what you learned in this lab.
 !!! success "Training complete!"
     You deployed the Dynatrace Log Module, configured log ingest rules, masked sensitive data, split multi-line records, shaped logs with OpenPipeline, and analyzed a failure end to end across Problems, Kubernetes, Traces, and Services. 🎉
 
-## Continue
-
-Now that the lab has been completed, in the next section we will clean up the codespaces instance.
-
-<div class="grid cards" markdown>
-- [Continue to cleanup:octicons-arrow-right-24:](cleanup.md)
-</div>
+Your hands-on environment is cleaned up automatically when the lab session ends — there is nothing for you to remove.
