@@ -12,7 +12,7 @@
         <link rel="prev" href="..">
       
       
-        <link rel="next" href="../3-codespaces/">
+        <link rel="next" href="../4-deploy-dynatrace/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>2. Getting started - Dynatrace Enablement Lab: Log Ingest 101</title>
+        <title>2. Prerequisites - Dynatrace Enablement Lab: Log Ingest 101</title>
       
     
     
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              2. Getting started
+              2. Prerequisites
             
           </span>
         </div>
@@ -296,7 +296,7 @@
           
   
   <span class="md-ellipsis">
-    2. Getting started
+    2. Prerequisites
   </span>
   
 
@@ -307,7 +307,7 @@
         
   
   <span class="md-ellipsis">
-    2. Getting started
+    2. Prerequisites
   </span>
   
 
@@ -369,6 +369,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#validate-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate your environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#continue" class="md-nav__link">
     <span class="md-ellipsis">
       Continue
@@ -392,31 +401,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../3-codespaces/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    3. Codespaces
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../4-deploy-dynatrace/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    4. Deploy Dynatrace
+    3. Deploy Dynatrace
   </span>
   
 
@@ -436,7 +425,7 @@
         
   
   <span class="md-ellipsis">
-    5. Configure Dynatrace
+    4. Configure Dynatrace
   </span>
   
 
@@ -456,27 +445,7 @@
         
   
   <span class="md-ellipsis">
-    6. Analyze Logs
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cleanup/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    7. Cleanup
+    5. Analyze Logs
   </span>
   
 
@@ -552,6 +521,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#validate-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate your environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#continue" class="md-nav__link">
     <span class="md-ellipsis">
       Continue
@@ -578,7 +556,7 @@
   
 
 
-  <h1>2. Getting started</h1>
+  <h1>2. Prerequisites</h1>
 
 <div class="admonition info">
 <p class="admonition-title">Requirements</p>
@@ -586,10 +564,6 @@
 <li>A <strong>Dynatrace SaaS Tenant with DPS license</strong> (<a href="https://dt-url.net/trial" target="_blank">sign up here</a>)<ul>
 <li>Live, Sprint, or Dev environment</li>
 <li>Full administrator access to the account and tenant</li>
-</ul>
-</li>
-<li>A <strong>GitHub account</strong> to interact with the demo repository and run a Codespaces instance<ul>
-<li>Codespaces core-hours and storage available (<a href="https://github.com/settings/billing" target="_blank">GitHub Billing &amp; Licensing</a>)</li>
 </ul>
 </li>
 </ul>
@@ -630,11 +604,52 @@ explanation: "Log enrichment adds metadata that lets Dynatrace recognize, correl
 <p class="admonition-title">These settings are prerequisites</p>
 <p>Both OneAgent feature groups (OpenTelemetry and Log Enrichment) must be enabled <strong>before</strong> you deploy Dynatrace in the next sections, otherwise the enrichment context will be missing from the logs you ingest.</p>
 </div>
+<h2 id="validate-your-environment">Validate your environment<a class="headerlink" href="#validate-your-environment" title="Permanent link">#</a></h2>
+<p>Your hands-on environment (a Kubernetes cluster running the AstroShop demo app) is provisioned for you when you start the lab. Open the <strong>Terminal</strong> tab and run the checks below — all three must pass before you continue.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>astroshop
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>cronjobs
+</span></code></pre></div>
+<!-- LAB_QUESTION
+type: shell-verification
+question: "Verify the k3d cluster node is Ready"
+buttonText: "Check Cluster"
+command: "kubectl get nodes --no-headers 2>/dev/null | grep -c ' Ready'"
+expect:
+  operator: gt
+  value: 0
+hint: "The environment takes a few minutes to be fully provisioned. Wait, then run `kubectl get nodes` in the Terminal tab and try again."
+explanation: "The cluster node is Ready — your Kubernetes environment is up."
+-->
+
+<!-- LAB_QUESTION
+type: shell-verification
+question: "Verify the AstroShop application pods are Running"
+buttonText: "Check AstroShop"
+command: "kubectl get pods -n astroshop --no-headers 2>/dev/null | grep -c Running"
+expect:
+  operator: gt
+  value: 0
+hint: "AstroShop is deployed automatically. If no pods are Running, recycle them with `kubectl delete pods --all -n astroshop` and wait a minute."
+explanation: "AstroShop pods are Running — the demo application is ready to be monitored."
+-->
+
+<!-- LAB_QUESTION
+type: shell-verification
+question: "Verify the CronJobs namespace exists (it generates the sample log data)"
+buttonText: "Check CronJobs"
+command: "kubectl get namespace cronjobs --no-headers 2>/dev/null | grep -c cronjobs"
+expect:
+  operator: gt
+  value: 0
+hint: "If the namespace is missing, run `deployCronJobs` in the Terminal tab to (re)deploy the CronJob manifests."
+explanation: "The cronjobs namespace exists — the sample CronJobs that produce log data are deployed."
+-->
+
 <h2 id="continue">Continue<a class="headerlink" href="#continue" title="Permanent link">#</a></h2>
-<p>In the next section, we'll launch our Codespaces instance.</p>
 <div class="grid cards">
 <ul>
-<li><a href="../3-codespaces/">Continue to Codespaces<span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></li>
+<li><a href="../4-deploy-dynatrace/">Continue to Deploy Dynatrace<span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></li>
 </ul>
 </div>
 
@@ -691,13 +706,13 @@ explanation: "Log enrichment adds metadata that lets Dynatrace recognize, correl
         
         
           
-          <a href="../3-codespaces/" class="md-footer__link md-footer__link--next" aria-label="Next: 3. Codespaces">
+          <a href="../4-deploy-dynatrace/" class="md-footer__link md-footer__link--next" aria-label="Next: 3. Deploy Dynatrace">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                3. Codespaces
+                3. Deploy Dynatrace
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -742,7 +757,7 @@ explanation: "Log enrichment adds metadata that lets Dynatrace recognize, correl
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       if (typeof dynatrace !== 'undefined') {
-        dynatrace.sendBizEvent('page_load', {'page': "2. Getting started"});
+        dynatrace.sendBizEvent('page_load', {'page': "2. Prerequisites"});
       }
     });
   </script>

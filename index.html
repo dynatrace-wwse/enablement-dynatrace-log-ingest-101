@@ -6,6 +6,8 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
+        <meta name="description" content="Ingest, configure, and analyze Kubernetes logs with Dynatrace — deploy the Log Module, build OpenPipeline rules, mask sensitive data, and troubleshoot in context.">
+      
       
       
       
@@ -374,27 +376,7 @@
         
   
   <span class="md-ellipsis">
-    2. Getting started
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="3-codespaces/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    3. Codespaces
+    2. Prerequisites
   </span>
   
 
@@ -414,7 +396,7 @@
         
   
   <span class="md-ellipsis">
-    4. Deploy Dynatrace
+    3. Deploy Dynatrace
   </span>
   
 
@@ -434,7 +416,7 @@
         
   
   <span class="md-ellipsis">
-    5. Configure Dynatrace
+    4. Configure Dynatrace
   </span>
   
 
@@ -454,27 +436,7 @@
         
   
   <span class="md-ellipsis">
-    6. Analyze Logs
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="cleanup/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    7. Cleanup
+    5. Analyze Logs
   </span>
   
 
@@ -594,9 +556,9 @@ Support is community-driven and provided exclusively via <a href="https://github
 <p><strong>Lab tasks:</strong></p>
 <ol>
 <li>
-<p>Launch GitHub codespaces container with lab setup</p>
+<p>Start your hands-on environment</p>
 <ul>
-<li>Kubernetes cluster running AstroShop demo application</li>
+<li>Kubernetes cluster running the AstroShop demo application, provisioned for you</li>
 </ul>
 </li>
 <li>
@@ -629,9 +591,6 @@ Support is community-driven and provided exclusively via <a href="https://github
 <li>Services</li>
 </ul>
 </li>
-<li>
-<p>Clean up GitHub codespaces instance</p>
-</li>
 </ol>
 <details class="tip">
 <summary>The OpenTelemetry Option</summary>
@@ -643,10 +602,7 @@ It is possible using pure OpenTelemetry. Here is a tutorial which guides you thr
 <h3 id="technologies-used">Technologies Used<a class="headerlink" href="#technologies-used" title="Permanent link">#</a></h3>
 <ul>
 <li><a href="https://www.dynatrace.com/trial">Dynatrace</a></li>
-<li><a href="https://kind.sigs.k8s.io/">Kubernetes Kind</a><ul>
-<li>tested on Kind tag 1.30.0</li>
-</ul>
-</li>
+<li><a href="https://k3d.io/">k3d</a> (lightweight Kubernetes in the managed lab environment)</li>
 <li><a href="https://github.com/Dynatrace/dynatrace-operator">Dynatrace Operator</a><ul>
 <li>tested on v1.8.1 (Mar 2026)</li>
 </ul>
@@ -661,7 +617,7 @@ It is possible using pure OpenTelemetry. Here is a tutorial which guides you thr
 <p><a href="https://docs.dynatrace.com/docs/ingest-from/setup-on-k8s/how-it-works/kubernetes-monitoring">Dynatrace on Kubernetes: Platform monitoring</a></p>
 <p><a href="https://opentelemetry.io/docs/demo/architecture/">OpenTelemetry Astronomy Shop Demo Architecture</a></p>
 <h2 id="continue">Continue<a class="headerlink" href="#continue" title="Permanent link">#</a></h2>
-<p>In the next section, we'll review the prerequisites for this lab needed before launching our Codespaces instance.</p>
+<p>In the next section, we'll review the prerequisites for this lab and validate your environment before deploying Dynatrace.</p>
 <div class="grid cards">
 <ul>
 <li><a href="2-getting-started/">Continue to getting started<span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span></a></li>
@@ -673,6 +629,9 @@ It is possible using pure OpenTelemetry. Here is a tutorial which guides you thr
 
 
 
+
+  
+  
 
 
 
@@ -705,13 +664,13 @@ It is possible using pure OpenTelemetry. Here is a tutorial which guides you thr
         
         
           
-          <a href="2-getting-started/" class="md-footer__link md-footer__link--next" aria-label="Next: 2. Getting started">
+          <a href="2-getting-started/" class="md-footer__link md-footer__link--next" aria-label="Next: 2. Prerequisites">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                2. Getting started
+                2. Prerequisites
               </div>
             </div>
             <div class="md-footer__button md-icon">

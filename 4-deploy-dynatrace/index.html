@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../3-codespaces/">
+        <link rel="prev" href="../2-getting-started/">
       
       
         <link rel="next" href="../5-configure-dynatrace/">
@@ -20,7 +20,7 @@
     
     
       
-        <title>4. Deploy Dynatrace - Dynatrace Enablement Lab: Log Ingest 101</title>
+        <title>3. Deploy Dynatrace - Dynatrace Enablement Lab: Log Ingest 101</title>
       
     
     
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              4. Deploy Dynatrace
+              3. Deploy Dynatrace
             
           </span>
         </div>
@@ -289,27 +289,7 @@
         
   
   <span class="md-ellipsis">
-    2. Getting started
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../3-codespaces/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    3. Codespaces
+    2. Prerequisites
   </span>
   
 
@@ -338,7 +318,7 @@
           
   
   <span class="md-ellipsis">
-    4. Deploy Dynatrace
+    3. Deploy Dynatrace
   </span>
   
 
@@ -349,7 +329,7 @@
         
   
   <span class="md-ellipsis">
-    4. Deploy Dynatrace
+    3. Deploy Dynatrace
   </span>
   
 
@@ -476,7 +456,7 @@
         
   
   <span class="md-ellipsis">
-    5. Configure Dynatrace
+    4. Configure Dynatrace
   </span>
   
 
@@ -496,27 +476,7 @@
         
   
   <span class="md-ellipsis">
-    6. Analyze Logs
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cleanup/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    7. Cleanup
+    5. Analyze Logs
   </span>
   
 
@@ -710,7 +670,7 @@ Toggle the <code>Telemetry endpoints for data ingest</code> flag/setting to <cod
 </span></code></pre></div></p>
 <p><img alt="Configure Cluster" src="../img/deploy-dynatrace_k8s_configure_cluster.png" /></p>
 <h3 id="deploy-dynatrace-operator">Deploy Dynatrace Operator<a class="headerlink" href="#deploy-dynatrace-operator" title="Permanent link">#</a></h3>
-<p>Navigate back to your GitHub Codespaces instance.  From the terminal, paste the <code>helm install dynatrace-operator</code> command and execute it.</p>
+<p>Open the <strong>Terminal</strong> tab.  Paste the <code>helm install dynatrace-operator</code> command and execute it.</p>
 <p><img alt="Deploy Dynatrace Operator" src="../img/deploy-dynatrace_k8s_deploy_dt_operator.png" /></p>
 <p>Validate the new Dynatrace pods are running:
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>dynatrace
@@ -728,7 +688,7 @@ explanation: "The Dynatrace Operator is Running — it can now manage the DynaKu
 -->
 
 <h3 id="deploy-dynakube">Deploy Dynakube<a class="headerlink" href="#deploy-dynakube" title="Permanent link">#</a></h3>
-<p>Locate the <code>dynakube.yaml</code> file that you downloaded from your tenant.  With the file (directory) open, navigate back to your GitHub Codespaces instance.  Click and hold to drag and drop the <code>dynakube.yaml</code> file into your Codespaces instance.</p>
+<p>Open the <strong>Terminal</strong> tab. Create a <code>dynakube.yaml</code> file (e.g. <code>nano dynakube.yaml</code>) and paste in the DynaKube manifest you generated in your tenant, then save it.</p>
 <p><img alt="Copy Dynakube" src="../img/deploy-dynatrace_copy_dynakube.gif" /></p>
 <div class="admonition warning">
 <p class="admonition-title">ActiveGate Container Resources</p>
@@ -1052,7 +1012,7 @@ explanation: "With applicationMonitoring, the Dynatrace webhook injects code mod
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../3-codespaces/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3. Codespaces">
+          <a href="../2-getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 2. Prerequisites">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1062,20 +1022,20 @@ explanation: "With applicationMonitoring, the Dynatrace webhook injects code mod
                 Previous
               </span>
               <div class="md-ellipsis">
-                3. Codespaces
+                2. Prerequisites
               </div>
             </div>
           </a>
         
         
           
-          <a href="../5-configure-dynatrace/" class="md-footer__link md-footer__link--next" aria-label="Next: 5. Configure Dynatrace">
+          <a href="../5-configure-dynatrace/" class="md-footer__link md-footer__link--next" aria-label="Next: 4. Configure Dynatrace">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                5. Configure Dynatrace
+                4. Configure Dynatrace
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1120,7 +1080,7 @@ explanation: "With applicationMonitoring, the Dynatrace webhook injects code mod
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       if (typeof dynatrace !== 'undefined') {
-        dynatrace.sendBizEvent('page_load', {'page': "4. Deploy Dynatrace"});
+        dynatrace.sendBizEvent('page_load', {'page': "3. Deploy Dynatrace"});
       }
     });
   </script>
