@@ -73,7 +73,7 @@ helm install dynatrace-operator oci://public.ecr.aws/dynatrace/dynatrace-operato
 
 ### Deploy Dynatrace Operator
 
-Navigate back to your GitHub Codespaces instance.  From the terminal, paste the `helm install dynatrace-operator` command and execute it.
+Open the **Terminal** tab.  Paste the `helm install dynatrace-operator` command and execute it.
 
 ![Deploy Dynatrace Operator](./img/deploy-dynatrace_k8s_deploy_dt_operator.png)
 
@@ -96,7 +96,7 @@ explanation: "The Dynatrace Operator is Running — it can now manage the DynaKu
 
 ### Deploy Dynakube
 
-Locate the `dynakube.yaml` file that you downloaded from your tenant.  With the file (directory) open, navigate back to your GitHub Codespaces instance.  Click and hold to drag and drop the `dynakube.yaml` file into your Codespaces instance.
+Open the **Terminal** tab. Create a `dynakube.yaml` file (e.g. `nano dynakube.yaml`) and paste in the DynaKube manifest you generated in your tenant, then save it.
 
 ![Copy Dynakube](./img/deploy-dynatrace_copy_dynakube.gif)
 

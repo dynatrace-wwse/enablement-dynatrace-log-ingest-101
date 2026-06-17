@@ -1,3 +1,12 @@
+---
+description: Ingest, configure, and analyze Kubernetes logs with Dynatrace — deploy the Log Module, build OpenPipeline rules, mask sensitive data, and troubleshoot in context.
+tags:
+  - logs
+  - observability
+  - openpipeline
+difficulty: beginner
+duration: 90
+---
 
 --8<-- "snippets/disclaimer.md"
 
@@ -7,9 +16,9 @@ During this hands-on training lab, we’ll learn how to capture logs from Kubern
 
 **Lab tasks:**
 
-1. Launch GitHub codespaces container with lab setup
+1. Start your hands-on environment
 
-     - Kubernetes cluster running AstroShop demo application
+     - Kubernetes cluster running the AstroShop demo application, provisioned for you
 
 2. Deploy Kubernetes Platform Monitoring + Application Observability
 
@@ -33,16 +42,13 @@ During this hands-on training lab, we’ll learn how to capture logs from Kubern
     - Distributed Tracing
     - Services
 
-8. Clean up GitHub codespaces instance
-
 --8<-- "snippets/opentelemetry-logs.md"
 
 ## Technical Specification
 
 ### Technologies Used
 - [Dynatrace](https://www.dynatrace.com/trial)
-- [Kubernetes Kind](https://kind.sigs.k8s.io/)
-    - tested on Kind tag 1.30.0
+- [k3d](https://k3d.io/) (lightweight Kubernetes in the managed lab environment)
 - [Dynatrace Operator](https://github.com/Dynatrace/dynatrace-operator)
     - tested on v1.8.1 (Mar 2026)
 - Dynatrace OneAgent
@@ -58,7 +64,7 @@ During this hands-on training lab, we’ll learn how to capture logs from Kubern
 
 ## Continue
 
-In the next section, we'll review the prerequisites for this lab needed before launching our Codespaces instance.
+In the next section, we'll review the prerequisites for this lab and validate your environment before deploying Dynatrace.
 
 <div class="grid cards" markdown>
 - [Continue to getting started:octicons-arrow-right-24:](2-getting-started.md)
