@@ -168,8 +168,8 @@ question: "Verify the two DynaKube objects were created in the dynatrace namespa
 buttonText: "Check DynaKube"
 command: "kubectl get dynakube -n dynatrace --no-headers 2>/dev/null | grep -c ''"
 expect:
-  operator: gte
-  value: 2
+  operator: gt
+  value: 1
 hint: "Run `kubectl apply -f dynakube.yaml` in the Terminal tab. The lab uses two DynaKubes: one for Kubernetes monitoring + Log Management, one for the agents (Application Observability)."
 explanation: "Both DynaKube objects exist — the Operator is reconciling Kubernetes monitoring, Application Observability, and the Log Module."
 -->
