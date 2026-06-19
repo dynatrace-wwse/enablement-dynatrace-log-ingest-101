@@ -2,17 +2,25 @@
   "templateVersion": "1.0.0",
   "id": "logs-101-fundamentals",
   "category": "CO",
-  "title": "Log Ingest 101 — Fundamentals",
+  "title": "Log Ingest 101 \u2014 Fundamentals",
   "description": "Validate your understanding of Kubernetes log ingestion with Dynatrace as covered in this lab: the Log Module, log ingest rules, autodiscovery, sensitive data masking, timestamp splitting, and OpenPipeline processing.",
   "difficulty": "beginner",
   "estimatedTime": 8,
   "imagine": "You just finished the Log Ingest 101 enablement. Dynatrace is running on a k3d cluster collecting logs from the AstroShop app and CronJobs, with OpenPipeline shaping the payment service logs. You want to confirm you understood how the pieces fit together.",
   "yourGoal": "Answer six questions about how Dynatrace ingests, processes, and analyzes Kubernetes logs as it applied to this lab.",
   "tools": [
-    { "label": "Dynatrace Operator" },
-    { "label": "Log Module" },
-    { "label": "Log ingest rules" },
-    { "label": "OpenPipeline" }
+    {
+      "label": "Dynatrace Operator"
+    },
+    {
+      "label": "Log Module"
+    },
+    {
+      "label": "Log ingest rules"
+    },
+    {
+      "label": "OpenPipeline"
+    }
   ],
   "story": {
     "introduction": "The lab deployed the Dynatrace Operator and Log Module on a k3d cluster, configured log ingestion for the astroshop and cronjobs namespaces, and built an OpenPipeline pipeline for the payment service. These questions reinforce what each component does.",
@@ -41,7 +49,7 @@
           "id": "c",
           "text": "A Fluent Bit sidecar that Dynatrace injects into every application pod",
           "isCorrect": false,
-          "explanation": "Dynatrace can integrate with Fluent Bit, but in this lab the OneAgent Log Module collects the logs — no sidecar is injected."
+          "explanation": "Dynatrace can integrate with Fluent Bit, but in this lab the OneAgent Log Module collects the logs \u2014 no sidecar is injected."
         },
         {
           "id": "d",
@@ -52,9 +60,8 @@
       ],
       "correctAnswer": "a",
       "explanation": "The Dynatrace Operator manages the Log Module, which runs as a logmonitoring pod on each node and reads container logs from the node filesystem.",
-      "points": 1000,
       "hints": [
-        "Look at the pods in the `dynatrace` namespace — one of them has `logmonitoring` in its name.",
+        "Look at the pods in the `dynatrace` namespace \u2014 one of them has `logmonitoring` in its name.",
         "The Operator is the manager; it deploys the component that does the actual collection."
       ]
     },
@@ -66,7 +73,7 @@
       "options": [
         {
           "id": "a",
-          "text": "In the Dynatrace tenant Log ingest rules settings — the Dynakube only seeds an initial cluster-scoped rule",
+          "text": "In the Dynatrace tenant Log ingest rules settings \u2014 the Dynakube only seeds an initial cluster-scoped rule",
           "isCorrect": true,
           "explanation": "Correct! The Dynakube seeds the first rule on creation, but ongoing ingest is controlled by Log ingest rules in the tenant settings."
         },
@@ -84,14 +91,13 @@
         },
         {
           "id": "d",
-          "text": "Log ingest cannot be filtered — Dynatrace always ingests every container log",
+          "text": "Log ingest cannot be filtered \u2014 Dynatrace always ingests every container log",
           "isCorrect": false,
           "explanation": "Ingest is rule-based; you scope it by namespace, content, log level, annotations, and more."
         }
       ],
       "correctAnswer": "a",
       "explanation": "The Dynakube `ingestRuleMatchers` is a quality-of-life seed used at deployment. Ongoing log ingest is governed by Log ingest rules in the Dynatrace tenant, which can be scoped at environment, host group, cluster, and host levels.",
-      "points": 1000,
       "hints": [
         "Re-read the tip: 'Log ingest for the Log Module is controlled by the Dynatrace tenant, not the local Dynakube configuration.'",
         "Rules can be set at four scopes: host, Kubernetes cluster, host group, and environment."
@@ -125,12 +131,11 @@
           "id": "d",
           "text": "CronJobs must be converted to Deployments before their logs can be ingested",
           "isCorrect": false,
-          "explanation": "Workload kind is not the blocker — the autodiscovery requirements and the feature flag are."
+          "explanation": "Workload kind is not the blocker \u2014 the autodiscovery requirements and the feature flag are."
         }
       ],
       "correctAnswer": "a",
       "explanation": "A log file must meet all autodiscovery requirements to be picked up automatically. Containers that only echo to stdout don't qualify, so you enable the `Collect all container logs` Log module feature flag to capture them.",
-      "points": 1000,
       "hints": [
         "Think about the difference between a real log file and a container echoing to stdout.",
         "The fix was a Log module feature flag, not a new ingest rule."
@@ -144,7 +149,7 @@
       "options": [
         {
           "id": "a",
-          "text": "On the OneAgent / Log Module, before the data is ingested — the raw value never reaches Dynatrace storage",
+          "text": "On the OneAgent / Log Module, before the data is ingested \u2014 the raw value never reaches Dynatrace storage",
           "isCorrect": true,
           "explanation": "Correct! Masking is performed on the agent at the source, so the unmasked value is never stored in Dynatrace."
         },
@@ -169,7 +174,6 @@
       ],
       "correctAnswer": "a",
       "explanation": "Sensitive data masking is performed directly on OneAgent / the Log Module, ensuring sensitive data is never ingested into the system. SHA-256 produces a stable hash so identical values still match each other.",
-      "points": 800,
       "hints": [
         "Re-read: 'Masking is performed directly on OneAgent, ensuring that sensitive data are never ingested.'",
         "If the raw value never reaches storage, where must the masking occur?"
@@ -208,7 +212,6 @@
       ],
       "correctAnswer": "a",
       "explanation": "OpenPipeline Data extraction with a Business Event rule turns matching log records into bizevents (here `astroshop.paymentservice.transaction.complete`), which you can then use for business analytics and observability.",
-      "points": 800,
       "hints": [
         "The rule lived under the `Data extraction` tab and had type `Business Event`.",
         "The event type string was `astroshop.paymentservice.transaction.complete`."
@@ -247,15 +250,20 @@
       ],
       "correctAnswer": "a",
       "explanation": "A pipeline only processes data that a Dynamic Route sends to it. The route's matching condition (a DQL expression, here matching the astroshop namespace and payment container) selects which records flow through the pipeline.",
-      "points": 800,
       "hints": [
         "Re-read: 'A pipeline will not have any effect unless logs are configured to be routed to the pipeline.'",
         "The matching condition was a DQL query on `k8s.namespace.name` and `k8s.container.name`."
       ]
     }
   ],
-  "maxScore": 5400,
-  "tags": ["logs", "log-ingestion", "kubernetes", "openpipeline", "dynatrace", "log-module"],
+  "tags": [
+    "logs",
+    "log-ingestion",
+    "kubernetes",
+    "openpipeline",
+    "dynatrace",
+    "log-module"
+  ],
   "learningObjectives": [
     "Explain how the Dynatrace Operator and Log Module collect Kubernetes container logs",
     "Describe where log ingest rules are managed and how their scopes work",

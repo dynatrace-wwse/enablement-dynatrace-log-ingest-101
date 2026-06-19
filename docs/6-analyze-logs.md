@@ -144,7 +144,7 @@ explanation: "Because you enabled Log Enrichment earlier, each log carries trace
 
 Complete the assessment below to validate what you learned in this lab.
 
-<!-- boundScenarioId: logs-101-fundamentals retake=false -->
+<!-- LAB_QUESTIONAIRE: logs-101-fundamentals retake=false -->
 
 !!! success "Training complete!"
     You deployed the Dynatrace Log Module, configured log ingest rules, masked sensitive data, split multi-line records, shaped logs with OpenPipeline, and analyzed a failure end to end across Problems, Kubernetes, Traces, and Services. 🎉
