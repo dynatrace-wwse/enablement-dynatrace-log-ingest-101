@@ -91,6 +91,20 @@ hint: "If the namespace is missing, run `deployCronJobs` in the Terminal tab to 
 explanation: "The cronjobs namespace exists — the sample CronJobs that produce log data are deployed."
 -->
 
+<!-- LAB_SOLUTION
+commands:
+  - waitForAstroshop
+verify:
+  - source .devcontainer/util/source_framework.sh >/dev/null 2>&1 && waitForAstroshop
+reveal: |
+  ### Environment readiness
+  AstroShop is a heavy demo app deployed automatically when the lab starts, so it
+  can take a few minutes for its pods to reach Running. `waitForAstroshop` blocks
+  (bounded retry) until at least one AstroShop pod is Running, unblocking the
+  environment check. If it never comes up, recycle the pods with
+  `kubectl delete pods --all -n astroshop` and wait a minute.
+-->
+
 ## Continue
 
 <div class="grid cards" markdown>
