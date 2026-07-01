@@ -108,9 +108,14 @@ deployLogIngestDynakubes() {
     2>/dev/null || true
 
   # DynaKube #2: Application Observability agents DynaKube. References the same
-  # token secret created by dynatraceDeployOperator ($RepositoryName).
+  # token secret created by dynatraceDeployOperator ($RepositoryName). Keep it
+  # minimal (no metadataEnrichment / networkZone here — DynaKube #1 already owns
+  # those cluster-scoped features; enabling them on a second DynaKube is rejected
+  # by the operator's validating webhook). Surface any apply error instead of
+  # swallowing it, so failures are diagnosable in the app-layer-test log.
   printInfo "Applying the agents DynaKube (Application Observability)"
-  kubectl apply -f - <<AGENTS_DK
+  local agents_out
+  agents_out=$(kubectl apply -f - 2>&1 <<AGENTS_DK
 apiVersion: dynatrace.com/v1beta6
 kind: DynaKube
 metadata:
@@ -119,8 +124,6 @@ metadata:
 spec:
   apiUrl: ${DT_TENANT}/api
   tokens: ${RepositoryName}
-  metadataEnrichment:
-    enabled: true
   oneAgent:
     applicationMonitoring: {}
   activeGate:
@@ -136,6 +139,8 @@ spec:
         memory: 768Mi
     replicas: 1
 AGENTS_DK
+)
+  printInfo "agents DynaKube apply: ${agents_out}"
 
   printInfo "Both DynaKubes applied. The Operator will reconcile the Log Module and agents."
 }
