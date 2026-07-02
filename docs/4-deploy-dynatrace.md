@@ -94,6 +94,18 @@ hint: "Run the `helm install dynatrace-operator` command from your tenant in the
 explanation: "The Dynatrace Operator is Running — it can now manage the DynaKube and Log Module components."
 -->
 
+<!-- LAB_SOLUTION
+commands:
+  - dynatraceDeployOperator
+verify:
+  - source .devcontainer/util/source_framework.sh >/dev/null 2>&1 && waitForOperatorReady
+reveal: |
+  ### The solution
+  `dynatraceDeployOperator` Helm-installs the Dynatrace Operator into the
+  `dynatrace` namespace and creates the token secret the DynaKubes reference.
+  Once the operator + webhook pods are Running, this step is complete.
+-->
+
 ### Deploy Dynakube
 
 Open the **Terminal** tab. Create a `dynakube.yaml` file (e.g. `nano dynakube.yaml`) and paste in the DynaKube manifest you generated in your tenant, then save it.
@@ -184,6 +196,24 @@ expect:
   value: 0
 hint: "The Log Module (logmonitoring pod) is deployed by the Operator once the DynaKube is applied. Wait 3-5 minutes after applying the DynaKube and try again."
 explanation: "The Log Module is Running — it is now collecting container logs from the node and shipping the ones that match your ingest rules."
+-->
+
+<!-- LAB_SOLUTION
+commands:
+  - deployLogIngestDynakubes
+verify:
+  - source .devcontainer/util/source_framework.sh >/dev/null 2>&1 && waitForTwoDynakubes
+  - source .devcontainer/util/source_framework.sh >/dev/null 2>&1 && waitForLogModule
+reveal: |
+  ### The solution
+  `deployLogIngestDynakubes` deploys the two DynaKubes this lab teaches:
+  1. A **Kubernetes platform monitoring + Log Module** DynaKube (framework
+     `k8s-only` mode, Log Module on by default, ingest scoped to the `astroshop`
+     namespace).
+  2. An **Application Observability** agents DynaKube (`applicationMonitoring`).
+
+  Both reference the token secret created by `dynatraceDeployOperator`. Once both
+  DynaKube objects exist and the `logmonitoring` pod is Running, the checks pass.
 -->
 
 ### Dynakubes Kubernetes Monitoring and Application Observability + Log Management
