@@ -101,31 +101,42 @@ deployLogIngestDynakubes() {
   # k8s-only mode leaves out the oneAgent section; log monitoring is on by default.
   DK_LOG_MONITORING=true deployDynatrace k8s-only
 
-  # Scope the generated Log Module ingest rule to the astroshop namespace (as the
-  # lab teaches) if the DynaKube was created without it.
+  # Patch DynaKube #1:
+  #  - scope the Log Module ingest rule to the astroshop namespace (as the lab teaches);
+  #  - DISABLE metadataEnrichment. The framework enables it on #1 with no
+  #    namespaceSelector, which makes #1 claim ALL namespaces via the mutating
+  #    webhook. The operator then rejects the agents DynaKube #2 with
+  #    "tries to inject into namespaces where another Dynakube already injects
+  #    into". Turning enrichment off on the k8s/log DynaKube lets the agents
+  #    DynaKube own application injection for astroshop.
   kubectl -n dynatrace patch dynakube "${RepositoryName}" --type merge \
-    -p '{"spec":{"logMonitoring":{"ingestRuleMatchers":[{"attribute":"k8s.namespace.name","values":["astroshop"]}]}}}' \
+    -p '{"spec":{"metadataEnrichment":{"enabled":false},"logMonitoring":{"ingestRuleMatchers":[{"attribute":"k8s.namespace.name","values":["astroshop"]}]}}}' \
     2>/dev/null || true
 
   # DynaKube #2: Application Observability agents DynaKube. References the same
-  # token secret created by dynatraceDeployOperator ($RepositoryName). Keep it
-  # minimal (no metadataEnrichment / networkZone here — DynaKube #1 already owns
-  # those cluster-scoped features; enabling them on a second DynaKube is rejected
-  # by the operator's validating webhook). Surface any apply error instead of
-  # swallowing it, so failures are diagnosable in the app-layer-test log.
-  printInfo "Applying the agents DynaKube (Application Observability)"
+  # token secret created by dynatraceDeployOperator ($RepositoryName).
+  # Constraints learned from the operator's validating webhook:
+  #  - DynaKube name must be <= 40 chars (it is the base for resource names), so
+  #    use the short name "logingest-agents" (not ${RepositoryName}-agents = 42).
+  #  - applicationMonitoring must set a namespaceSelector; the injection selector
+  #    lives at spec.oneAgent.applicationMonitoring.namespaceSelector in v1beta6.
+  #    Scope it to the astroshop namespace so it does not conflict with #1.
+  printInfo "Applying the agents DynaKube (Application Observability, scoped to astroshop)"
   local agents_out
   agents_out=$(kubectl apply -f - 2>&1 <<AGENTS_DK
 apiVersion: dynatrace.com/v1beta6
 kind: DynaKube
 metadata:
-  name: ${RepositoryName}-agents
+  name: logingest-agents
   namespace: dynatrace
 spec:
   apiUrl: ${DT_TENANT}/api
   tokens: ${RepositoryName}
   oneAgent:
-    applicationMonitoring: {}
+    applicationMonitoring:
+      namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: astroshop
   activeGate:
     capabilities:
       - routing
