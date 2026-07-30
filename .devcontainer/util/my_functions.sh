@@ -109,9 +109,15 @@ deployLogIngestDynakubes() {
   #    "tries to inject into namespaces where another Dynakube already injects
   #    into". Turning enrichment off on the k8s/log DynaKube lets the agents
   #    DynaKube own application injection for astroshop.
-  kubectl -n dynatrace patch dynakube "${RepositoryName}" --type merge \
+  # The framework derives the DynaKube name per user (per-user Grail isolation
+  # renames it from $RepositoryName), so resolve the ACTUAL DynaKube #1 name —
+  # patching the old fixed name silently failed and the webhook then rejected
+  # DynaKube #2 with "another Dynakube already injects into these namespaces".
+  local dk1
+  dk1=$(kubectl get dynakube -n dynatrace -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+  kubectl -n dynatrace patch dynakube "${dk1:-$RepositoryName}" --type merge \
     -p '{"spec":{"metadataEnrichment":{"enabled":false},"logMonitoring":{"ingestRuleMatchers":[{"attribute":"k8s.namespace.name","values":["astroshop"]}]}}}' \
-    2>/dev/null || true
+    || printWarn "Could not patch DynaKube ${dk1:-$RepositoryName} — the agents DynaKube may be rejected"
 
   # DynaKube #2: Application Observability agents DynaKube. References the same
   # token secret created by dynatraceDeployOperator ($RepositoryName).
