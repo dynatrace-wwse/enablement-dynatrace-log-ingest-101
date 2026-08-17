@@ -8,6 +8,10 @@ difficulty: beginner
 duration: 90
 ---
 
+!!! info "Being converted to the Dynatrace Enablement App"
+    This training is being converted to an immersive, interactive and self-service training
+    that is best delivered through the **Dynatrace Enablement App**.
+
 --8<-- "snippets/disclaimer.md"
 
 ## Lab Overview
