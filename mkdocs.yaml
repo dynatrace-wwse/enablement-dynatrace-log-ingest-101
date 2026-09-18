@@ -1,5 +1,9 @@
 INHERIT: mkdocs-base.yaml
 
+# Orbital display name (ENH-009). A training's identity is <org>/<repo>; this
+# is only what learners see, so it need not match the site title below.
+# mkdocs does not know this key and warns about it — that is expected.
+training_name: "Log Ingest 101"
 site_name: "Dynatrace Enablement Lab: Log Ingest 101"
 repo_name: "View Code on GitHub"
 repo_url: "https://github.com/dynatrace-wwse/enablement-dynatrace-log-ingest-101"
