@@ -222,3 +222,6 @@ Dockerfile.framework
 
 
 docs/stylesheets/extra.css
+
+
+docs/javascripts/mermaid.min.js
