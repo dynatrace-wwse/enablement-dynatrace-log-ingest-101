@@ -1,6 +1,7 @@
 ---
 description: Ingest, configure, and analyze Kubernetes logs with Dynatrace — deploy the Log Module, build OpenPipeline rules, mask sensitive data, and troubleshoot in context.
 tags:
+  - classic
   - logs
   - observability
   - openpipeline
