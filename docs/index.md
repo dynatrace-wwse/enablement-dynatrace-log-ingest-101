@@ -5,6 +5,7 @@ tags:
   - logs
   - observability
   - openpipeline
+  - dynatrace-components
 difficulty: beginner
 duration: 90
 ---
